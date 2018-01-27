@@ -14,10 +14,13 @@ import random
 
 app = Flask(__name__)
 
-USERNAME = "feed"
-PASSWORD = "cochack"
 
-client = pymongo.MongoClient("mongodb://" + USERNAME + ":" + PASSWORD+ "@cluster0-shard-00-00-ckk4p.mongodb.net")
+USERNAME = os.environ.get('USERNAME') or 'feed'
+PASSWORD = os.environ.get('PASSWORD') or 'cochack'
+
+client = pymongo.MongoClient("mongodb://" + USERNAME + ":" + PASSWORD+ "@cluster0-shard-00-00-ckk4p.mongodb.net:27017,cluster0-shard-00-01-ckk4p.mongodb.net:27017,cluster0-shard-00-02-ckk4p.mongodb.net:27017/admin?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin")
+# client = pymongo.MongoClient("localhost", 27017)
+
 # client = pymongo.MongoClient("localhost", 27017)
 
 # DELETE_DB_PASSWORD = os.environ.get('DELETE_DB_PASSWORD') or keys['delete_db_password']
@@ -36,28 +39,21 @@ def index():
 @app.route('/users', methods=['GET'])
 def login():
 
-    print(request.data)
-    print(request.args)
-    print(request.form)
-    print(request.json)
-
-
-    email = request.data('email')
+    email = request.args.get('email')
     password = request.args.get('password')
     print(email, password)
 
     if email == None or password == None:
         print("NOT WORKING!")
 
-    finder = users.find({}, {})
-
     # Check if user exists
-    finder = users.find({"email": email, "password" : password }, {"email" : 1})
-    finder = finder.toArray()
-    if len(finder) == 1:
-        return jsonify({"success": True, "count" : 1 })
+    finder = list(users.find({"email": email, "password" : password }, {"email" : 1}))
+    print(finder)
+    if (len(finder) != 0):
+        return jsonify({"success": True, "email" : finder[0]['email']})
     else:
-        return jsonify({"success": False, "count" : len(finder)})
+        return jsonify({"success": False})
+
 
 
 @app.route('/findDropoff', methods=['GET'])
