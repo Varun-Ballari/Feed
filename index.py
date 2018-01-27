@@ -33,7 +33,7 @@ def index():
     return jsonify({"success": True, "Works" : True })
 
 
-@app.route('/users', methods=['GET'])
+@app.route('/users', methods=['POST'])
 def login():
 
     print(request)
