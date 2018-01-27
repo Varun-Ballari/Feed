@@ -35,7 +35,7 @@ history = db.History
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return jsonify({"success": True, "Works" : True })
 
 
 @app.route('/users', methods=['GET'])
