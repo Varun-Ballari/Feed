@@ -1,12 +1,9 @@
 from flask import Flask, request, render_template, jsonify
 import os
 import pymongo
-import pprint
 import random
-import pycountry
 
 # from sklearn.feature_extraction.text import CountVectorizer
-import numpy as np
 
 try:
     from keys import keys
@@ -18,17 +15,15 @@ except:
 # ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN') or keys['access_token']
 # ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET') or keys['access_token_secret']
 
-# auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-# auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-# api = tweepy.API(auth)
 
 
-# app = Flask(__name__)
+
+app = Flask(__name__)
 
 USERNAME = "feed"
 PASSWORD = "cochack"
 
-client = pymongo.MongoClient("mongodb://" + USERNAME + ":" + PASSWORD+ "cluster0-shard-00-00-ckk4p.mongodb.net")
+client = pymongo.MongoClient("mongodb://" + USERNAME + ":" + PASSWORD+ "@cluster0-shard-00-00-ckk4p.mongodb.net")
 # client = pymongo.MongoClient("localhost", 27017)
 
 # DELETE_DB_PASSWORD = os.environ.get('DELETE_DB_PASSWORD') or keys['delete_db_password']
