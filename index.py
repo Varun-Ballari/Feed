@@ -3,7 +3,6 @@ import os
 import pymongo
 import random
 
-# from sklearn.feature_extraction.text import CountVectorizer
 
 try:
     from keys import keys
