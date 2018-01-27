@@ -29,16 +29,22 @@ class ViewController: UIViewController {
 
     
     @IBAction func login(_ sender: Any) {
-        
         incorrect.alpha = 0
         
-        let url = URL(string: "https://www.google.com")!
+        let urlstring = "https://feed-coc.herokuapp.com/users?email=" + email.text! + "&password=" + password.text!
+        
+        let url = URL(string: urlstring)!
         let session = URLSession.shared
         let request = NSMutableURLRequest(url: url)
         request.httpMethod = "GET"
 
-        let paramString = "email=" + email.text! + "&password=" + password.text!
-        request.httpBody = paramString.data(using: String.Encoding.utf8)
+//        let json: [String: Any] = ["email": email.text!, "password": password.text!]
+////        let paramString = "email=" + email.text! + "&password=" + password.text!
+//        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+//        request.httpBody = jsonData
+//        print(request)
+
+//        request.httpBody = paramString.data(using: String.Encoding.utf8)
         
         let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
             guard let _: Data = data, let _: URLResponse = response, error == nil else {
@@ -47,9 +53,18 @@ class ViewController: UIViewController {
                 return
             }
             let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+            print(dataString)
             
-            if (dataString?.contains("True"))! {
-                self.performSegue(withIdentifier: "goToMain", sender: self)
+            do {
+                if let data = data,
+                    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                    let success = json["success"] as? Bool {
+                    if success {
+                        self.performSegue(withIdentifier: "goToMain", sender: self)
+                    }
+                }
+            } catch {
+                print("Error deserializing JSON: \(error)")
             }
         }
         
