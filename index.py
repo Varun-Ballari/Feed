@@ -33,14 +33,11 @@ def index():
     return jsonify({"success": True, "Works" : True })
 
 
-@app.route('/users', methods=['POST'])
+@app.route('/users', methods=['GET'])
 def login():
 
-    print(request)
-    user_info = request.json #request.form
-    print(user_info)
-    email = str(user_info.get('email'))
-    password = str(user_info.get('password'))
+    email = request.args.get('email')
+    password = request.args.get('password')
     print(email, password)
 
     finder = users.find({}, {})
