@@ -40,7 +40,8 @@ def index():
 
 @app.route('/users', methods=['GET'])
 def login():
-    user_info = request.args #request.form
+    user_info = request.form #request.form
+    print(request.form)
     email = str(user_info.get('email'))
     password = str(user_info.get('password'))
     print(email, password)
