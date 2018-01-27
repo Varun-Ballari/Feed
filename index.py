@@ -41,13 +41,14 @@ def index():
 @app.route('/users', methods=['GET'])
 def login():
     user_info = request.args #request.form
-    username = str(user_info.get('username'))
+    email = str(user_info.get('email'))
     password = str(user_info.get('password'))
+    print(email, password)
 
     finder = users.find({}, {})
 
     # Check if user exists
-    finder = users.find({"email": username, "password" : password }, {"email" : 1})
+    finder = users.find({"email": email, "password" : password }, {"email" : 1})
     finder = finder.toArray()
     if len(finder) == 1:
         return jsonify({"success": True, "count" : 1 })
