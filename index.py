@@ -36,9 +36,18 @@ def index():
 @app.route('/users', methods=['GET'])
 def login():
 
-    email = request.args.get('email')
+    print(request.data)
+    print(request.args)
+    print(request.form)
+    print(request.json)
+
+
+    email = request.data('email')
     password = request.args.get('password')
     print(email, password)
+
+    if email == None or password == None:
+        print("NOT WORKING!")
 
     finder = users.find({}, {})
 
