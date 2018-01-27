@@ -12,6 +12,7 @@
 		1187E4FC201CFB1E0058469E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1187E4FA201CFB1E0058469E /* Main.storyboard */; };
 		1187E4FE201CFB1E0058469E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1187E4FD201CFB1E0058469E /* Assets.xcassets */; };
 		1187E501201CFB1E0058469E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1187E4FF201CFB1E0058469E /* LaunchScreen.storyboard */; };
+		1187E509201D33700058469E /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187E508201D33700058469E /* CameraViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		1187E4FD201CFB1E0058469E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1187E500201CFB1E0058469E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1187E502201CFB1E0058469E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1187E508201D33700058469E /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				1187E4F6201CFB1E0058469E /* AppDelegate.swift */,
 				1187E4F8201CFB1E0058469E /* ViewController.swift */,
 				1187E4FA201CFB1E0058469E /* Main.storyboard */,
+				1187E508201D33700058469E /* CameraViewController.swift */,
 				1187E4FD201CFB1E0058469E /* Assets.xcassets */,
 				1187E4FF201CFB1E0058469E /* LaunchScreen.storyboard */,
 				1187E502201CFB1E0058469E /* Info.plist */,
@@ -138,6 +141,7 @@
 			files = (
 				1187E4F9201CFB1E0058469E /* ViewController.swift in Sources */,
 				1187E4F7201CFB1E0058469E /* AppDelegate.swift in Sources */,
+				1187E509201D33700058469E /* CameraViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
