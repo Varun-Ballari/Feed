@@ -4,11 +4,6 @@ import pymongo
 import random
 
 
-try:
-    from keys import keys
-except:
-    print("Keys File not Found. Online Access")
-
 # CONSUMER_KEY = os.environ.get('CONSUMER_KEY') or keys['consumer_key']
 # CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET') or keys['consumer_secret']
 # ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN') or keys['access_token']
@@ -40,6 +35,8 @@ def index():
 
 @app.route('/users', methods=['GET'])
 def login():
+
+    print(request)
     user_info = request.json #request.form
     print(user_info)
     email = str(user_info.get('email'))
