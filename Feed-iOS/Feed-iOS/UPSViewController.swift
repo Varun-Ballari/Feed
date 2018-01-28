@@ -38,23 +38,23 @@ class UPSViewController: UIViewController {
     }
     
     func postRequest() {
-        let urlstring = "https://feed-coc.herokuapp.com/sendFood"
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
-        let url = URL(string: urlstring)!
-        let session = URLSession.shared
-        let request = NSMutableURLRequest(url: url)
-        request.httpMethod = "POST"
-        
         let lat = String(format: "%f", myLat)
         let lng = String(format: "%f", myLng)
         let tlat = String(format: "%f", toLat)
-        let tlng = String(format: "%f", myLat)
+        let tlng = String(format: "%f", toLng)
+        
+//        let urlstring = "https://feed-coc.herokuapp.com/sendFood?foodName=\(foodName!)&serving=\(serving!)&myLat=\(lat)&myLng=\(lng)&toLat=\(tlat)&toLng=\(tlng)&name=\(name!)&email=\(appDelegate.username!)"
+
+        let urlstring: String! = "https://feed-coc.herokuapp.com/sendFood?foodName="+foodName!+"&serving="+serving!+"&myLat="+lat+"&myLng="+lng+"&toLat="+tlat+"&toLng="+tlng+"&name="+name!+"&email="+appDelegate.username!
+        let urlStr: String = urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
 
         
-        let json: [String: String] = ["foodName": foodName, "serving": serving, "myLat": lat, "myLng": lng, "toLat": tlat, "toLng": tlng, "name": name]
-        print(json)
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
-        request.httpBody = jsonData
+        let url: URL! = URL(string: urlStr as String)
+        let session = URLSession.shared
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "GET"
         
         let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
             guard let _: Data = data, let _: URLResponse = response, error == nil else {
@@ -68,13 +68,15 @@ class UPSViewController: UIViewController {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                     let success = json["success"] as? Bool {
                     if success {
-                        self.arrivaldate.text = ""
-                        self.arrivalday.text = ""
-                        self.arrivaltime.text = ""
-                        self.pickupdate.text = ""
-                        self.pickuptime.text = ""
-                        self.transitdays.text = ""
+                        DispatchQueue.main.async {
 
+                            self.arrivaldate.text = json["arrivalDate"] as? String
+                            self.arrivalday.text = json["dayOfWeek"] as? String
+                            self.arrivaltime.text = json["arrivalTime"] as? String
+                            self.pickupdate.text = json["pickupDate"] as? String
+                            self.pickuptime.text = json["pickupTime"] as? String
+                            self.transitdays.text = json["businessDaysInTransit"] as? String
+                        }
                     } else {
                     }
                 }
