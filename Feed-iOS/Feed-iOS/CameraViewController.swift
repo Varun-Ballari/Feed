@@ -12,19 +12,27 @@ import Vision
 
 class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    
-    var label: UILabel!
+    @IBOutlet weak var button: UIButton!
+    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var labelView: UIView!
+    @IBOutlet weak var captureButtonView: UIView!
+    @IBOutlet weak var border: UIView!
+    var captureSession: AVCaptureSession!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        label = UILabel()
-        label.backgroundColor = .white
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
 
-        let captureSession = AVCaptureSession()
-//        captureSession.sessionPreset = .photo
+        captureButtonView.layer.cornerRadius = captureButtonView.frame.size.width/2
+        captureButtonView.clipsToBounds = true
+        
+        border.layer.cornerRadius = border.frame.size.width/2
+        border.clipsToBounds = true
+
+        border.layer.borderWidth = 2
+        border.layer.borderColor = UIColor.white.cgColor
+        border.backgroundColor = .clear
+        
+        captureSession = AVCaptureSession()
         
         guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
         guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
@@ -41,17 +49,15 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
         captureSession.addOutput(dataOutput)
         
-        setupLabel()
+        
+        labelView.layer.zPosition = 1
+        captureButtonView.layer.zPosition = 1
+        border.layer.zPosition = 1
+        
+        self.view.bringSubview(toFront: labelView)
+
     }
 
-    func setupLabel() {
-        view.addSubview(label)
-        label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 60).isActive = true
-        label.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        label.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        label.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    }
-    
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
@@ -69,6 +75,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         
         try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
+    }
+    
+    @IBAction func captureImage(_ sender: Any) {
+        captureSession.stopRunning()
+        self.performSegue(withIdentifier: "goToSend", sender: self)
     }
     
 }
