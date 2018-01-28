@@ -231,12 +231,12 @@ def requestDropoff():
     print(fb_street, fb_city, fb_state, fb_zip )
 
     g = geocoder.google(fb_street + ", " + fb_city + " " + fb_state + ", US " + fb_zip)
-    lat, lng = g.latlng
-    print(lat, lng)
     if g.latlng is None:
         # For now, returning a true value so it doesn't break
         return jsonify({"success": True, "latitude": 33.7643, "longitude": -80.223, "name": chosenFoodBank})
     else:
+        lat,lng = g.latlng
+
         return jsonify({"success": True, "latitude": lat, "longitude": lng, "name": chosenFoodBank})
 
 #Place the UPS request
