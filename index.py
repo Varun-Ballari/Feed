@@ -4,6 +4,8 @@ import ast
 import pymongo
 import random
 import requests
+import geocoder
+from datetime import date
 
 
 # CONSUMER_KEY = os.environ.get('CONSUMER_KEY') or keys['consumer_key']
@@ -29,6 +31,9 @@ users = db.Users
 foodbanks = db.Foodbanks
 history = db.History
 
+chosenFoodBank = None
+chosenSummary = None
+chosenTotalCharge = None
 
 @app.route('/')
 def index():
@@ -62,8 +67,9 @@ def allfoodBanks():
 
 
 #Choose which foodbank to deliver food to and get delivery estimates using UPS's Rate API
-@app.route('/requestDropoff', methods=['POST'])
+@app.route('/requestDropoff', methods=['GET'])
 def requestDropoff():
+<<<<<<< HEAD
     body = request.form
     how_long = body.get('how_long') #How long the food will last
     foodName = body.get('foodName') #How name of the food
@@ -78,21 +84,48 @@ def requestDropoff():
         "street": 1, "city": 1, "state": 1, "zip": 1}))
     # Return best drop off location
     index = 2000
+=======
+    # userStreet = request.args.get('userStreet') # \
+    # userCity  = request.args.get('userCity')    # |
+    # userState = request.args.get('userState')   # | Location of the user
+    # userZip = request.args.get('userZip')       # /
+    #how_long = request.args.get('how_long') #How long the food will last
+
+    userLat = float(request.args.get('latitude'))
+    userLong = float(request.args.get('longitude'))
+    g = geocoder.google([userLat, userLong], method='reverse')
+    userStreet = g.street
+    userCity = g.city
+    userState = g.state
+    userZip = g.postal
+
+    # print(userStreet)
+    # print(userCity)
+    # print(userState)
+    # print(userZip)
+    # Check if food bank will accept it
+    # finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
+    #     "street": 1, "city": 1, "state": 1, "zip": 1}))
+
+    finder = list(foodbanks.find({}, {"name" : 1, 
+    "street": 1, "city": 1, "state": 1, "zip": 1}))
+
+    chargeList = []
+    summaryList = []
+    arrivalList = []
+>>>>>>> 80f3b90e3b3d3ce82a08fbb33127b17a2fb39f71
     for fb in finder:
-        print(fb)
         fb_name = fb['name']
         fb_street = fb['street']
         fb_city = fb['city']
         fb_state = fb['state']
         fb_zip = fb['zip']
 
-        print(index)
-        index = index + 1
-        print(fb_name)
-        print(fb_street)
-        print(fb_city)
-        print(fb_state)
-        print(fb_zip)
+#        print(fb_name)
+#        print(fb_street)
+#        print(fb_city)
+#        print(fb_state)
+#        print(fb_zip)
         dictToSend = {
             "UPSSecurity": {
                 "UsernameToken": {
@@ -115,30 +148,30 @@ def requestDropoff():
                         "Name": "Shipper Name",
                         "ShipperNumber": "Shipper Number",
                         "Address": {
-                            "AddressLine": ["350 Ferst drive"],
-                            "City": "Atlanta",
-                            "StateProvinceCode": "GA",
-                            "PostalCode": "30332",
+                            "AddressLine": [userStreet],
+                            "City": userCity,
+                            "StateProvinceCode": userState,
+                            "PostalCode": userZip,
                             "CountryCode": "US"
                         }
                     },
                     "ShipTo": {
-                        "Name": "Atlanta Community Food Bank",
+                        "Name": fb_name,
                         "Address": {
-                            "AddressLine": ["732 Joseph E. Lowery Blvd NW"],
-                            "City": "Atlanta",
-                            "StateProvinceCode": "GA",
-                            "PostalCode": "30332",
+                            "AddressLine": [fb_street],
+                            "City": fb_city,
+                            "StateProvinceCode": fb_state,
+                            "PostalCode": fb_zip,
                             "CountryCode": "US"
                         }
                     },
                     "ShipFrom": {
                         "Name": "Ship From Name",
                         "Address": {
-                            "AddressLine": ["350 Ferst drive"],
-                            "City": "Atlanta",
-                            "StateProvinceCode": "GA",
-                            "PostalCode": "30332",
+                            "AddressLine": [userStreet],
+                            "City": userCity,
+                            "StateProvinceCode": userState,
+                            "PostalCode": userZip,
                             "CountryCode": "US"
                         }
                     },
@@ -180,31 +213,76 @@ def requestDropoff():
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
         resDict = res.json()
+<<<<<<< HEAD
         total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']
+=======
+        
+        total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
+>>>>>>> 80f3b90e3b3d3ce82a08fbb33127b17a2fb39f71
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
-
         arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
         arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
 
-        # businessDaysInTransit = summary_dict['EstimatedArrival']['BusinessDaysInTransit']
+        chargeList.append(total_charges)
+        summaryList.append(summary_dict)
+        arrivalList.append(arrivalDate + arrivalTime)
 
-        pickupDate = summary_dict['EstimatedArrival']['Pickup']['Date']
-        pickupTime = summary_dict['EstimatedArrival']['Pickup']['Time']
-
+<<<<<<< HEAD
         print(total_charges, summary_dict, arrivalDate, arrivalTime, pickupDate, pickupTime)
 
         # dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
+=======
+    # return the index of the earlier arrival date and time
+    index = arrivalList.index(min(arrivalList))
+>>>>>>> 80f3b90e3b3d3ce82a08fbb33127b17a2fb39f71
+
+    chosenSummary = summaryList[index] #global variable
+    chosenTotalCharge = chargeList[index] #global variable
+
+    chosenFoodBank = finder[index]['name'] #global variable (so sendFood can access it)
+    fb_street = finder[index]['street']
+    fb_city = finder[index]['city']
+    fb_state = finder[index]['state']
+    fb_zip = finder[index]['zip']
+
+    g = geocoder.google(fb_street + ", " + fb_city + " " + fb_state + ", US " + fb_zip)
+    lat, lng = g.latlng
+    return jsonify({"success": True, "latitude": lat, "longitude": lng, "name": chosenFoodBank})
+
+#Place the UPS request
+@app.route('/sendFood', methods=['POST'])
+def sendFood():
+    body = request.form
+    foodName = body.get('foodName') #How name of the food
+    serving = body.get('serving') #How many people can the food serve
+    email = body.get('email') #email of sender
+    today = date.today()  
+
+    history.insert({
+        'email': email,
+        'foodBankName': chosenFoodBank,
+        'serving': serving,
+        'foodName': foodName,
+        'Date': today 
+        })
+
+    arrivalDate = chosenSummary['EstimatedArrival']['Arrival']['Date']
+    arrivalTime = chosenSummary['EstimatedArrival']['Arrival']['Time']
+    businessDaysInTransit = chosenSummary['EstimatedArrival']['BusinessDaysInTransit']
+    pickupDate = chosenSummary['EstimatedArrival']['Pickup']['Date']
+    pickupTime = chosenSummary['EstimatedArrival']['Pickup']['Time']
+    dayOfWeek = chosenSummary['EstimatedArrival']['DayOfWeek']
+
+    return jsonify({success: True, "arrivalDate": arrivalDate, "arrivalTime": arrivalTime, 
+        "pickupDate": pickupDate, "pickupTime": pickupTime, 
+        "businessDaysInTransit": businessDaysInTransit, "dayOfWeek":dayOfWeek} )
 
 
-    return jsonify({"success": True})
-
-
-@app.route('/userHistory')
+@app.route('/userHistory', methods=['GET'])
 def userHistory():
-
-    # return from history table
-
-    return jsonify({"success": True})
+    email = request.args.get('email')
+    finder = list(history.find({"email": email}, {"_id": 0}))
+    return jsonify({"success": True, "userHistoryList" : finder})
 
 
 if __name__ == '__main__':
