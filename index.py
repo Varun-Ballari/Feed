@@ -5,8 +5,7 @@ import pymongo
 import random
 import requests
 import geocoder
-from datetime import date
-
+import datetime
 
 # CONSUMER_KEY = os.environ.get('CONSUMER_KEY') or keys['consumer_key']
 # CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET') or keys['consumer_secret']
@@ -30,6 +29,11 @@ db = client.Feed
 users = db.Users
 foodbanks = db.Foodbanks
 history = db.History
+
+# Testing purposes
+#chosenFoodBank = "ATL Food Bank"
+#chosenSummary = {u'EstimatedArrival': {u'Arrival': {u'Date': u'20180130', u'Time': u'230000'}, u'DayOfWeek': u'TUE', u'Pickup': {u'Date': u'20180127', u'Time': u'000000'}, u'CustomerCenterCutoff': u'000000', u'BusinessDaysInTransit': u'1'}, u'GuaranteedIndicator': u'', u'Service': {u'Description': u'UPS Ground'}, u'SaturdayDelivery': u'0'}
+#chosenTotalCharge = "9.43"
 
 chosenFoodBank = None
 chosenSummary = None
@@ -223,7 +227,7 @@ def sendFood():
     foodName = body.get('foodName') #How name of the food
     serving = body.get('serving') #How many people can the food serve
     email = body.get('email') #email of sender
-    today = date.today()
+    today = datetime.datetime.utcnow()
 
     history.insert({
         'email': email,
@@ -240,7 +244,7 @@ def sendFood():
     pickupTime = chosenSummary['EstimatedArrival']['Pickup']['Time']
     dayOfWeek = chosenSummary['EstimatedArrival']['DayOfWeek']
 
-    return jsonify({success: True, "arrivalDate": arrivalDate, "arrivalTime": arrivalTime,
+    return jsonify({"success": True, "arrivalDate": arrivalDate, "arrivalTime": arrivalTime,
         "pickupDate": pickupDate, "pickupTime": pickupTime,
         "businessDaysInTransit": businessDaysInTransit, "dayOfWeek":dayOfWeek} )
 
