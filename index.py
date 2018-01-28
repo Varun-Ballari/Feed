@@ -67,7 +67,7 @@ def allfoodBanks():
 
 
 #Choose which foodbank to deliver food to and get delivery estimates using UPS's Rate API
-@app.route('/requestDropoff', methods=['POST'])
+@app.route('/requestDropoff', methods=['GET'])
 def requestDropoff():
     # userStreet = request.args.get('userStreet') # \
     # userCity  = request.args.get('userCity')    # |
