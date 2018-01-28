@@ -16,3 +16,4 @@ scipy==0.19.0
 six==1.10.0
 tweepy==3.5.0
 Werkzeug==0.12.1
+geocoder==1.35.0

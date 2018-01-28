@@ -4,6 +4,8 @@ import ast
 import pymongo
 import random
 import requests
+import geocoder
+from datetime import date
 
 
 # CONSUMER_KEY = os.environ.get('CONSUMER_KEY') or keys['consumer_key']
@@ -29,6 +31,9 @@ users = db.Users
 foodbanks = db.Foodbanks
 history = db.History
 
+chosenFoodBank = None
+chosenSummary = None
+chosenTotalCharge = None
 
 @app.route('/')
 def index():
@@ -65,18 +70,23 @@ def allfoodBanks():
 @app.route('/requestDropoff', methods=['POST'])
 def requestDropoff():
     body = request.form
-    how_long = body.get('how_long') #How long the food will last
-    foodName = body.get('foodName') #How name of the food
-    servings = body.get('servings') #How many people can the food serve
-    userStreet = body.get('userStreet') # \
-    userCity  = body.get('userCity')    # |
-    userState = body.get('userState')   # | Location of the user
-    userZip = body.get('userZip')       # /
+    # userStreet = body.get('userStreet') # \
+    # userCity  = body.get('userCity')    # |
+    # userState = body.get('userState')   # | Location of the user
+    # userZip = body.get('userZip')       # /
+    #how_long = body.get('how_long') #How long the food will last
+
+    userLat = int(body.get('latitude'))
+    userLong = int(body.get('longitude'))
+    g = geocoder.google([userLat, userLong], method='reverse')
+    userStreet = g.street
+    userCity = g.city
+    userState = g.state
+    userZip = g.postal
 
     # Check if food bank will accept it
     # finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
     #     "street": 1, "city": 1, "state": 1, "zip": 1}))
-
 
     finder = list(foodbanks.find({}, {"name" : 1, 
     "street": 1, "city": 1, "state": 1, "zip": 1}))
@@ -119,30 +129,30 @@ def requestDropoff():
                         "Name": "Shipper Name",
                         "ShipperNumber": "Shipper Number",
                         "Address": {
-                            "AddressLine": ["350 Ferst drive"],
-                            "City": "Atlanta",
-                            "StateProvinceCode": "GA",
-                            "PostalCode": "30332",
+                            "AddressLine": [userStreet],
+                            "City": userCity,
+                            "StateProvinceCode": userState,
+                            "PostalCode": userZip,
                             "CountryCode": "US"
                         }
                     },
                     "ShipTo": {
-                        "Name": "Atlanta Community Food Bank",
+                        "Name": fb_name,
                         "Address": {
-                            "AddressLine": ["732 Joseph E. Lowery Blvd NW"],
-                            "City": "Atlanta",
-                            "StateProvinceCode": "GA",
-                            "PostalCode": "30332",
+                            "AddressLine": [fb_street],
+                            "City": fb_city,
+                            "StateProvinceCode": fb_state,
+                            "PostalCode": fb_zip,
                             "CountryCode": "US"
                         }
                     },
                     "ShipFrom": {
                         "Name": "Ship From Name",
                         "Address": {
-                            "AddressLine": ["350 Ferst drive"],
-                            "City": "Atlanta",
-                            "StateProvinceCode": "GA",
-                            "PostalCode": "30332",
+                            "AddressLine": [userStreet],
+                            "City": userCity,
+                            "StateProvinceCode": userState,
+                            "PostalCode": userZip,
                             "CountryCode": "US"
                         }
                     },
@@ -196,22 +206,47 @@ def requestDropoff():
 
     # return the index of the earlier arrival date and time
     index = arrivalList.index(min(arrivalList))
-    summary = summaryList[index]
 
-    charge = chargeList[index]
-    arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
-    arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
-    businessDaysInTransit = summary_dict['EstimatedArrival']['BusinessDaysInTransit']
-    pickupDate = summary_dict['EstimatedArrival']['Pickup']['Date']
-    pickupTime = summary_dict['EstimatedArrival']['Pickup']['Time']
-    dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
+    chosenSummary = summaryList[index] #global variable
+    chosenTotalCharge = chargeList[index] #global variable
 
-    fb_name = finder[index]['name']
+    chosenFoodBank = finder[index]['name'] #global variable (so sendFood can access it)
     fb_street = finder[index]['street']
     fb_city = finder[index]['city']
     fb_state = finder[index]['state']
     fb_zip = finder[index]['zip']
-    return jsonify({"success": True})
+
+    g = geocoder.google(fb_street + ", " + "fb_city" + " " + fb_state + ", US " + fb_zip)
+    lat, lng = g.latlng
+    return jsonify({"success": True, "latitude": lat, "longitude": lng, "name": chosenFoodBank})
+
+#Place the UPS request
+@app.route('/sendFood', methods=['POST'])
+def sendFood():
+    body = request.form
+    foodName = body.get('foodName') #How name of the food
+    serving = body.get('serving') #How many people can the food serve
+    email = body.get('email') #email of sender
+    today = date.today()  
+
+    history.insert({
+        'email': email,
+        'foodBankName': chosenFoodBank,
+        'serving': serving,
+        'foodName': foodName,
+        'Date': today 
+        })
+
+    arrivalDate = chosenSummary['EstimatedArrival']['Arrival']['Date']
+    arrivalTime = chosenSummary['EstimatedArrival']['Arrival']['Time']
+    businessDaysInTransit = chosenSummary['EstimatedArrival']['BusinessDaysInTransit']
+    pickupDate = chosenSummary['EstimatedArrival']['Pickup']['Date']
+    pickupTime = chosenSummary['EstimatedArrival']['Pickup']['Time']
+    dayOfWeek = chosenSummary['EstimatedArrival']['DayOfWeek']
+
+    return jsonify({success: True, "arrivalDate": arrivalDate, "arrivalTime": arrivalTime, 
+        "pickupDate": pickupDate, "pickupTime": pickupTime, 
+        "businessDaysInTransit": businessDaysInTransit, "dayOfWeek":dayOfWeek} )
 
 
 @app.route('/userHistory', methods=['GET'])
