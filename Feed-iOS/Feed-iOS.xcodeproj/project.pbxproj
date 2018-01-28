@@ -155,6 +155,7 @@
 				1187E4F9201CFB1E0058469E /* ViewController.swift in Sources */,
 				9A9DF445201D430100E983BC /* UserViewController.swift in Sources */,
 				1187E4F7201CFB1E0058469E /* AppDelegate.swift in Sources */,
+				1187E511201D5A870058469E /* Resnet50.mlmodel in Sources */,
 				1187E509201D33700058469E /* CameraViewController.swift in Sources */,
 				9A9DF443201D3B5100E983BC /* MapViewController.swift in Sources */,
 				9A9DF448201D458100E983BC /* MKGradientGenerator.swift in Sources */,
@@ -297,7 +298,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+<<<<<<< HEAD
 				DEVELOPMENT_TEAM = LWRX96C84L;
+=======
+				COREML_CODEGEN_LANGUAGE = Swift;
+				DEVELOPMENT_TEAM = 58Q5L49C5J;
+>>>>>>> 51bdcccbc86e56cf9e9da5954f28e89a23cd3dba
 				INFOPLIST_FILE = "Feed-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Varun-Ballari.Feed-iOS";
