@@ -150,6 +150,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                 }
             } catch {
                 print("Error deserializing JSON: \(error)")
+                DispatchQueue.main.async {
+                    self.spinner.stopAnimating()
+                }
             }
         }
         
