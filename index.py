@@ -69,11 +69,13 @@ def login():
 def allfoodBanks():
     finder = list(foodbanks.find({}, {"foodLast": 0, "_id": 0}))
     lat_lngs = list()
+    foodBankList = list()
     for x in finder:
+        foodBankList.append(x)
         g = geocoder.google(x["street"] + ", " + x["city"] + " " + x["state"] + ", US " + x["zip"])
         t = g.latlng
         lat_lngs.append(t)
-    return jsonify({"success": True, "foodBankList" : finder, "lat, lng": lat_lngs})
+    return jsonify({"success": True, "foodBankList" : foodBankList, "lat, lng": lat_lngs})
 
 
 #Choose which foodbank to deliver food to and get delivery estimates using UPS's Rate API
