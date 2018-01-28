@@ -69,6 +69,22 @@ def allfoodBanks():
 #Choose which foodbank to deliver food to and get delivery estimates using UPS's Rate API
 @app.route('/requestDropoff', methods=['GET'])
 def requestDropoff():
+<<<<<<< HEAD
+    body = request.form
+    how_long = body.get('how_long') #How long the food will last
+    foodName = body.get('foodName') #How name of the food
+    servings = body.get('servings') #How many people can the food serve
+    userStreet = body.get('userStreet') # \
+    userCity  = body.get('userCity')    # |
+    userState = body.get('userState')   # | Location of the user
+    userZip = body.get('userZip')       # /
+
+    # Check if user exists
+    finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1,
+        "street": 1, "city": 1, "state": 1, "zip": 1}))
+    # Return best drop off location
+    index = 2000
+=======
     # userStreet = request.args.get('userStreet') # \
     # userCity  = request.args.get('userCity')    # |
     # userState = request.args.get('userState')   # | Location of the user
@@ -97,6 +113,7 @@ def requestDropoff():
     chargeList = []
     summaryList = []
     arrivalList = []
+>>>>>>> 80f3b90e3b3d3ce82a08fbb33127b17a2fb39f71
     for fb in finder:
         fb_name = fb['name']
         fb_street = fb['street']
@@ -196,8 +213,12 @@ def requestDropoff():
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
         resDict = res.json()
+<<<<<<< HEAD
+        total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']
+=======
         
         total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
+>>>>>>> 80f3b90e3b3d3ce82a08fbb33127b17a2fb39f71
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
         arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
         arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
@@ -206,8 +227,14 @@ def requestDropoff():
         summaryList.append(summary_dict)
         arrivalList.append(arrivalDate + arrivalTime)
 
+<<<<<<< HEAD
+        print(total_charges, summary_dict, arrivalDate, arrivalTime, pickupDate, pickupTime)
+
+        # dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
+=======
     # return the index of the earlier arrival date and time
     index = arrivalList.index(min(arrivalList))
+>>>>>>> 80f3b90e3b3d3ce82a08fbb33127b17a2fb39f71
 
     chosenSummary = summaryList[index] #global variable
     chosenTotalCharge = chargeList[index] #global variable
@@ -260,4 +287,3 @@ def userHistory():
 
 if __name__ == '__main__':
     app.run(debug = True)
-

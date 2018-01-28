@@ -19,6 +19,19 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBOutlet weak var border: UIView!
     var captureSession: AVCaptureSession!
     
+    var food: String!
+    var toLocation: String!
+    var toLocLat: Double!
+    var toLocLong: Double!
+    
+    override func viewDidAppear(_ animated: Bool) {
+        captureSession.startRunning()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        captureSession.stopRunning()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -36,26 +49,23 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         
         guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
         guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
-        captureSession.addInput(input)
         
+        captureSession.addInput(input)
         captureSession.startRunning()
         
         let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         view.layer.addSublayer(previewLayer)
         previewLayer.frame = view.frame
         
-        
         let dataOutput = AVCaptureVideoDataOutput()
         dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
         captureSession.addOutput(dataOutput)
-        
         
         labelView.layer.zPosition = 1
         captureButtonView.layer.zPosition = 1
         border.layer.zPosition = 1
         
         self.view.bringSubview(toFront: labelView)
-
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -79,7 +89,48 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     @IBAction func captureImage(_ sender: Any) {
         captureSession.stopRunning()
-        self.performSegue(withIdentifier: "goToSend", sender: self)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let urlstring = "https://feed-coc.herokuapp.com/requestDropoff?latitude=" + String(describing: appDelegate.currentLocation?.coordinate.latitude) + "&longitude=" + String(describing: appDelegate.currentLocation?.coordinate.longitude)
+        
+        let url = URL(string: urlstring)!
+        let session = URLSession.shared
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
+            guard let _: Data = data, let _: URLResponse = response, error == nil else {
+                return
+            }
+            let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+            print(dataString)
+            
+            do {
+                if let data = data,
+                    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                    let success = json["success"] as? Bool {
+                    if success {
+                        
+                        self.performSegue(withIdentifier: "goToSend", sender: self)
+
+                    } else {
+                    }
+                }
+            } catch {
+                print("Error deserializing JSON: \(error)")
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! SendDonationViewController
+        vc.toLocation = self.toLocation
+        vc.toLocLat = self.toLocLat
+        vc.toLocLong = self.toLocLong
     }
 }
+
+
 
