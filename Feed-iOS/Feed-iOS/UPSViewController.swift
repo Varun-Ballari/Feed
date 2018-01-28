@@ -21,6 +21,7 @@ class UPSViewController: UIViewController {
     var toLng: Double!
     var name: String!
     
+    @IBOutlet var chargeLabel: UILabel!
     @IBOutlet var arrivaldate: UILabel!
     @IBOutlet var arrivalday: UILabel!
     @IBOutlet var arrivaltime: UILabel!
@@ -76,6 +77,8 @@ class UPSViewController: UIViewController {
                             self.pickupdate.text = json["pickupDate"] as? String
                             self.pickuptime.text = json["pickupTime"] as? String
                             self.transitdays.text = json["businessDaysInTransit"] as? String
+                            self.chargeLabel.text = json["charge"] as? String
+
                         }
                     } else {
                     }
