@@ -63,11 +63,17 @@ def login():
         return jsonify({"success": False})
 
 
+
 # Returns list of all foodbanks
 @app.route('/allFoodBanks', methods=['GET'])
 def allfoodBanks():
     finder = list(foodbanks.find({}, {"foodLast": 0, "_id": 0}))
-    return jsonify({"success": True, "foodBankList" : finder})
+    lat_lngs = list()
+    for x in finder:
+        g = geocoder.google(x["street"] + ", " + x["city"] + " " + x["state"] + ", US " + x["zip"])
+        t = g.latlng
+        lat_lngs.append(t)
+    return jsonify({"success": True, "foodBankList" : finder, "lat, lng": lat_lngs})
 
 
 #Choose which foodbank to deliver food to and get delivery estimates using UPS's Rate API
@@ -229,7 +235,6 @@ def sendFood():
     email = body.get('email') #email of sender
     fb_name = body.get('name') #name of Food Bank
     today = datetime.datetime.utcnow()
-
     userLat = float(body.get('myLat'))
     userLng = float(body.get('myLng'))
     g = geocoder.google([userLat, userLng], method='reverse')
@@ -246,7 +251,11 @@ def sendFood():
     fb_state = g.state
     fb_zip = g.postal
 
-
+    print(email)
+    print(fb_name)
+    print(serving)
+    print(foodName)
+    print(today)
     history.insert({
         'email': email,
         'foodBankName': fb_name,
