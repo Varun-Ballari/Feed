@@ -74,7 +74,7 @@ def requestDropoff():
     userZip = body.get('userZip')       # /
 
     # Check if user exists
-    finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
+    finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1,
         "street": 1, "city": 1, "state": 1, "zip": 1}))
     # Return best drop off location
     index = 2000
@@ -179,9 +179,7 @@ def requestDropoff():
             }
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
-        print("helloaaas")
         resDict = res.json()
-        print(res)
         total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
 
@@ -192,6 +190,8 @@ def requestDropoff():
 
         pickupDate = summary_dict['EstimatedArrival']['Pickup']['Date']
         pickupTime = summary_dict['EstimatedArrival']['Pickup']['Time']
+
+        print(total_charges, summary_dict, arrivalDate, arrivalTime, pickupDate, pickupTime)
 
         # dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
 
@@ -209,4 +209,3 @@ def userHistory():
 
 if __name__ == '__main__':
     app.run(debug = True)
-

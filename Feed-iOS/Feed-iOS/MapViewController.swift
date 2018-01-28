@@ -16,11 +16,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private var currentLocation: CLLocation?
     let annotation = MKPointAnnotation()
     
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
 
         map.delegate = self
         
@@ -35,7 +32,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             locationManager.startUpdatingLocation()
         }
         
-        
         // Do any additional setup after loading the view.
     }
 
@@ -45,6 +41,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if currentLocation == nil {
             // Zoom to user location
             if let userLocation = locations.last {
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.currentLocation = userLocation
+
                 let viewRegion = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 2000, 2000)
                 map.setRegion(viewRegion, animated: false)
                 annotation.coordinate = userLocation.coordinate
@@ -53,16 +52,4 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             }
         }
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

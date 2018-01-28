@@ -12,36 +12,90 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet var tableView: UITableView!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        tableView.dataSource = self
-        tableView.delegate = self
-        self.automaticallyAdjustsScrollViewInsets = false
+    
+    var header: UIView!
+    var data: [[String:Any]] = [[:]]
+    
+    override func viewDidAppear(_ animated: Bool) {
+    
+    }
+    
+    @objc func getData() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
-        // Set a header for the table view
-        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 400))
-        tableView.tableHeaderView = header
-        header.backgroundColor = .clear
+        let urlstring = "https://feed-coc.herokuapp.com/userHistory?email=" + appDelegate.username
         
-        let ringProgressView = MKRingProgressView(frame: CGRect(x: header.frame.width/2 - 100, y: header.frame.height/2 - 100, width: 200, height: 200))
+        let url = URL(string: urlstring)!
+        let session = URLSession.shared
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
+            guard let _: Data = data, let _: URLResponse = response, error == nil else {
+                return
+            }
+            let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+            print(dataString ?? nil)
+            
+            do {
+                if let data = data,
+                    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                    let success = json["success"] as? Bool {
+                    if success {
+                        self.data = json["userHistoryList"] as! [[String:Any]]
+                        
+                        self.performSelector(onMainThread: #selector(self.reloadData), with: nil, waitUntilDone: true)
+                        
+                    } else {
+                        
+                    }
+                }
+            } catch {
+                print("Error deserializing JSON: \(error)")
+            }
+        }
+        
+        task.resume()
+    }
+    
+    @objc func reloadData() {
+        self.header = UIView(frame: CGRect(x: 0, y: 0, width: self.tableView.frame.width, height: 400))
+        self.tableView.tableHeaderView = self.header
+        self.header.backgroundColor = .white
+        
+        let ringProgressView = MKRingProgressView(frame: CGRect(x: self.header.frame.width/2 - 100, y: self.header.frame.height/2 - 100, width: 200, height: 200))
         ringProgressView.startColor = UIColor.init(red: 0.35, green: 0.7, blue: 0.16, alpha: 1.0)
         ringProgressView.endColor = .green
         ringProgressView.ringWidth = 15
-        ringProgressView.progress = 0.75
-        header.addSubview(ringProgressView)
+        print(Double(data.count) / 10.0)
+        ringProgressView.progress = Double(data.count) / 10.0
+        self.header.addSubview(ringProgressView)
         
-        let label = UILabel(frame: CGRect(x: header.frame.width/2 - 50, y: header.frame.height/2 - 50, width: 100, height: 100))
+        let label = UILabel(frame: CGRect(x: self.header.frame.width/2 - 50, y: self.header.frame.height/2 - 50, width: 100, height: 100))
         label.textAlignment = .center
-        label.text = "75"
+        label.text = String(describing: data.count)
         label.font = UIFont.boldSystemFont(ofSize: 50.0)
-
-
-        header.addSubview(label)
-
-        tableView.estimatedSectionHeaderHeight = 400.0
         
-        // Do any additional setup after loading the view.
+        let name = UILabel(frame: CGRect(x: self.view.frame.width/2 - (self.view.frame.width - 100)/2, y: self.header.frame.height - 30, width: self.view.frame.width - 100, height: 30))
+        name.textAlignment = .center
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        name.text = appDelegate.username
+        name.font = UIFont.boldSystemFont(ofSize: 25.0)
+        
+        self.header.addSubview(name)
+        self.header.addSubview(label)
+        self.tableView.estimatedSectionHeaderHeight = 400.0
+        self.tableView.reloadData()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
+        self.automaticallyAdjustsScrollViewInsets = false
+        tableView.allowsSelection = false
+        
+        self.performSelector(inBackground: #selector(getData), with: nil)
 
     }
 
@@ -51,32 +105,45 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 100
+        return data.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: "CellID")
-        cell.textLabel?.text = "\(indexPath.row)"
+        let cell: TableViewCell! = tableView.dequeueReusableCell(withIdentifier: "CellID") as! TableViewCell
+        
+        cell.date?.text = self.data[indexPath.row]["date"] as? String
+        cell.food?.text = self.data[indexPath.row]["foodName"] as? String
+        cell.fed?.text = self.data[indexPath.row]["serving"] as? String
+        cell.organization?.text = self.data[indexPath.row]["foodBank"] as? String
+        
+//        }
+        let num = (self.data[indexPath.row]["serving"] as? NSString)?.integerValue
+        
+        cell.imageView?.image = UIImage(named:"wheat1")
+
+        if let integ = num {
+            if integ < 10 {
+                cell.imageView?.image = UIImage.init(named: "wheat1")
+            } else if integ < 20 {
+                cell.imageView?.image = UIImage.init(named: "wheat2")
+            } else {
+                cell.imageView?.image = UIImage.init(named: "wheat3")
+            }
+        }
+        
+        cell.preservesSuperviewLayoutMargins = false
+        cell.separatorInset = UIEdgeInsets.zero
+        cell.layoutMargins = UIEdgeInsets.zero
+
         return cell
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! UITableViewCell
-//
-////        headerView.customLabel.text = content[section].name
-////        headerView.sectionNumber = section
-////        headerView.delegate = self
-//
-//        return headerView
-        
         let v = UIView()
-        v.backgroundColor = .green
-//
-//        let label = UILabel(frame: CGRect(x: 0, y: 0, width: v.frame.width, height: v.frame.height))
-//        label.textAlignment = .center
-//        label.text = "varun@ballari.com"
-//        label.font = UIFont.boldSystemFont(ofSize: 12.0)
-
-        
+        v.backgroundColor = .gray
         return v
     }
 

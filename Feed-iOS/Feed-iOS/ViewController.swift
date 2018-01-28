@@ -19,14 +19,12 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         incorrect.alpha = 0
         self.hideKeyboardWhenTappedAround()
-
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
     
     @IBAction func login(_ sender: Any) {
         incorrect.alpha = 0
@@ -48,7 +46,6 @@ class ViewController: UIViewController {
         
         let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
             guard let _: Data = data, let _: URLResponse = response, error == nil else {
-                print("*****error")
                 self.incorrect.alpha = 1
                 return
             }
@@ -60,7 +57,13 @@ class ViewController: UIViewController {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                     let success = json["success"] as? Bool {
                     if success {
+                        
+                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                        appDelegate.username = json["email"] as! String
+                        
                         self.performSegue(withIdentifier: "goToMain", sender: self)
+                    } else {
+                        self.incorrect.alpha = 1
                     }
                 }
             } catch {

@@ -318,10 +318,10 @@ open class MKRingProgressLayer: CALayer {
         
         // Draw backdrop circle
         
-//        ctx.addPath(circlePath.cgPath)
-//        let bgColor = backgroundRingColor ?? startColor.copy(alpha: 0.15)
-//        ctx.setStrokeColor(bgColor!)
-//        ctx.strokePath()
+        ctx.addPath(circlePath.cgPath)
+        let bgColor = backgroundRingColor ?? startColor.copy(alpha: 0.15)
+        ctx.setStrokeColor(bgColor!)
+        ctx.strokePath()
         
         
         // Draw solid arc
