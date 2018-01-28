@@ -83,10 +83,10 @@ def requestDropoff():
     userState = g.state
     userZip = g.postal
 
-    # print(userStreet)
-    # print(userCity)
-    # print(userState)
-    # print(userZip)
+#    print(userStreet)
+#    print(userCity)
+#    print(userState)
+#    print(userZip)
     # Check if food bank will accept it
     # finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
     #     "street": 1, "city": 1, "state": 1, "zip": 1}))
