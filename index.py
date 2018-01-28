@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 import os
+import ast
 import pymongo
 import random
 import requests
@@ -52,37 +53,46 @@ def login():
     else:
         return jsonify({"success": False})
 
+
 # Returns list of all foodbanks
 @app.route('/allFoodBanks', methods=['GET'])
 def allfoodBanks():
-    finder = list(foodbanks.find({}, {"foodLast": 0}))
+    finder = list(foodbanks.find({}, {"foodLast": 0, "_id": 0}))
     return jsonify({"success": True, "foodBankList" : finder})
 
 
 #Choose which foodbank to deliver food to and get delivery estimates using UPS's Rate API
 @app.route('/requestDropoff', methods=['POST'])
 def requestDropoff():
-    how_long = request.args.get('how_long') #How long the food will last
-
-    foodName = request.args.get('foodName') #How name of the food
-    servings = request.args.get('servings') #How many people can the food serve
-    userStreet = request.args.get('userStreet') # \
-    userCity  = request.args.get('userCity')    # |
-    userState = request.args.get('userState')   # | Location of the user
-    userZip = request.args.get('userZip')       # /
+    body = request.form
+    how_long = body.get('how_long') #How long the food will last
+    foodName = body.get('foodName') #How name of the food
+    servings = body.get('servings') #How many people can the food serve
+    userStreet = body.get('userStreet') # \
+    userCity  = body.get('userCity')    # |
+    userState = body.get('userState')   # | Location of the user
+    userZip = body.get('userZip')       # /
 
     # Check if user exists
-    finder = list(foodbanks.find({"foodLast": {"$lt": how_long} }, {"name" : 1, 
+    finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
         "street": 1, "city": 1, "state": 1, "zip": 1}))
     # Return best drop off location
-
+    index = 2000
     for fb in finder:
-        fb_name = finder['name']
-        fb_street = finder['street']
-        fb_city = finder['city']
-        fb_state = finder['state']
-        fb_zip = finder['zip']
+        print(fb)
+        fb_name = fb['name']
+        fb_street = fb['street']
+        fb_city = fb['city']
+        fb_state = fb['state']
+        fb_zip = fb['zip']
 
+        print(index)
+        index = index + 1
+        print(fb_name)
+        print(fb_street)
+        print(fb_city)
+        print(fb_state)
+        print(fb_zip)
         dictToSend = {
             "UPSSecurity": {
                 "UsernameToken": {
@@ -105,30 +115,30 @@ def requestDropoff():
                         "Name": "Shipper Name",
                         "ShipperNumber": "Shipper Number",
                         "Address": {
-                            "AddressLine": [userStreet],
-                            "City": userCity,
-                            "StateProvinceCode": userState,
-                            "PostalCode": userZip,
+                            "AddressLine": ["350 Ferst drive"],
+                            "City": "Atlanta",
+                            "StateProvinceCode": "GA",
+                            "PostalCode": "30332",
                             "CountryCode": "US"
                         }
                     },
                     "ShipTo": {
-                        "Name": fb_name,
+                        "Name": "Atlanta Community Food Bank",
                         "Address": {
-                            "AddressLine": [fb_street],
-                            "City": fb_city,
-                            "StateProvinceCode": fb_state,
-                            "PostalCode": fb_zip,
+                            "AddressLine": ["732 Joseph E. Lowery Blvd NW"],
+                            "City": "Atlanta",
+                            "StateProvinceCode": "GA",
+                            "PostalCode": "30332",
                             "CountryCode": "US"
                         }
                     },
                     "ShipFrom": {
                         "Name": "Ship From Name",
                         "Address": {
-                            "AddressLine": [userStreet],
-                            "City": userCity,
-                            "StateProvinceCode": userState,
-                            "PostalCode": userZip,
+                            "AddressLine": ["350 Ferst drive"],
+                            "City": "Atlanta",
+                            "StateProvinceCode": "GA",
+                            "PostalCode": "30332",
                             "CountryCode": "US"
                         }
                     },
@@ -169,19 +179,21 @@ def requestDropoff():
             }
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
+        print("helloaaas")
         resDict = res.json()
+        print(res)
         total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
 
         arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
         arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
 
-        businessDaysInTransit = summary_dict['EstimatedArrival']['BusinessDaysInTransit']
+        # businessDaysInTransit = summary_dict['EstimatedArrival']['BusinessDaysInTransit']
 
         pickupDate = summary_dict['EstimatedArrival']['Pickup']['Date']
         pickupTime = summary_dict['EstimatedArrival']['Pickup']['Time']
 
-        dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
+        # dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
 
 
     return jsonify({"success": True})
