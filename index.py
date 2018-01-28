@@ -301,6 +301,15 @@ def sendFood():
 
     print(fb_street, fb_city, fb_state, fb_zip)
 
+    if fb_street is None or fb_city is None or fb_state is None or fb_zip is None:
+        fb_street = "732 Joseph E. Lowery Blvd NW"
+        fb_city = "Atlanta"
+        fb_state = "GA"
+        fb_zip = "30318"
+
+    print(fb_street, fb_city, fb_state, fb_zip)
+
+
     result = history.insert_one({"email": email, "foodBank": fb_name, "serving": serving, "foodName": foodName, "date": today})
 
     dictToSend = {

@@ -98,10 +98,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
         
-        spinner = UIActivityIndicatorView.init(frame: CGRect(x: self.view.frame.width/2-50, y:  self.view.frame.height/2-50, width: 100, height: 100))
+        spinner = UIActivityIndicatorView.init(frame: CGRect(x: self.view.frame.width/2-75, y:  self.view.frame.height/2-75, width: 150, height: 150))
         
         self.view.addSubview(spinner)
         self.spinner.layer.zPosition = 1
+        spinner.color = .green
         
         UIView.animate(withDuration: 0.5) {
             self.spinner.startAnimating()
