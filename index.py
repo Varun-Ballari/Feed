@@ -73,13 +73,18 @@ def requestDropoff():
     userState = body.get('userState')   # | Location of the user
     userZip = body.get('userZip')       # /
 
-    # Check if user exists
-    finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
-        "street": 1, "city": 1, "state": 1, "zip": 1}))
-    # Return best drop off location
-    index = 2000
+    # Check if food bank will accept it
+    # finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
+    #     "street": 1, "city": 1, "state": 1, "zip": 1}))
+
+
+    finder = list(foodbanks.find({}, {"name" : 1, 
+    "street": 1, "city": 1, "state": 1, "zip": 1}))
+
+    chargeList = []
+    summaryList = []
+    arrivalList = []
     for fb in finder:
-        print(fb)
         fb_name = fb['name']
         fb_street = fb['street']
         fb_city = fb['city']
@@ -87,7 +92,6 @@ def requestDropoff():
         fb_zip = fb['zip']
 
         print(index)
-        index = index + 1
         print(fb_name)
         print(fb_street)
         print(fb_city)
@@ -179,32 +183,42 @@ def requestDropoff():
             }
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
-        print("helloaaas")
         resDict = res.json()
-        print(res)
+
         total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
-
         arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
         arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
 
-        # businessDaysInTransit = summary_dict['EstimatedArrival']['BusinessDaysInTransit']
+        chargeList.append(total_charges)
+        summaryList.append(summary_dict)
+        arrivalList.append(arrivalDate + arrivalTime)
 
-        pickupDate = summary_dict['EstimatedArrival']['Pickup']['Date']
-        pickupTime = summary_dict['EstimatedArrival']['Pickup']['Time']
+    # return the index of the earlier arrival date and time
+    index = arrivalList.index(min(arrivalList))
+    summary = summaryList[index]
 
-        # dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
+    charge = chargeList[index]
+    arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
+    arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
+    businessDaysInTransit = summary_dict['EstimatedArrival']['BusinessDaysInTransit']
+    pickupDate = summary_dict['EstimatedArrival']['Pickup']['Date']
+    pickupTime = summary_dict['EstimatedArrival']['Pickup']['Time']
+    dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
 
-
+    fb_name = finder[index]['name']
+    fb_street = finder[index]['street']
+    fb_city = finder[index]['city']
+    fb_state = finder[index]['state']
+    fb_zip = finder[index]['zip']
     return jsonify({"success": True})
 
 
-@app.route('/userHistory')
+@app.route('/userHistory', methods=['GET'])
 def userHistory():
-
-    # return from history table
-
-    return jsonify({"success": True})
+    email = request.args.get('email')
+    finder = list(foodbanks.find({"email": email}, {"_id": 0}))
+    return jsonify({"success": True, "userHistoryList" : finder})
 
 
 if __name__ == '__main__':
