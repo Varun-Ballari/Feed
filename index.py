@@ -249,7 +249,10 @@ def sendFood():
 def userHistory():
     email = request.args.get('email')
     finder = list(history.find({"email": email}, {"_id": 0}))
-    return jsonify({"success": True, "userHistoryList" : finder})
+    sum = 0
+    for x in finder:
+        sum += int(x["serving"])
+    return jsonify({"success": True, "userHistoryList" : finder, "sum" : sum})
 
 
 if __name__ == '__main__':
