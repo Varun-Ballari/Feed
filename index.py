@@ -234,28 +234,27 @@ def requestDropoff():
 def sendFood():
     body = request.form
     print(body)
-    foodName = body.get('foodName') #How name of the food
-    serving = body.get('serving') #How many people can the food serve
-    email = body.get('email') #email of sender
-    fb_name = body.get('name') #name of Food Bank
+    foodName = body['foodName'] #How name of the food
+    serving = body['serving'] #How many people can the food serve
+    email = body['email'] #email of sender
+    fb_name = body['name'] #name of Food Bank
     today = datetime.datetime.utcnow()
-    print(type('myLat'))
-    print(type('myLng'))
-    print(body.get('myLat'))
-    print(body.get('myLng'))
-    print(body.get('foodName'))
-    print(body.get('serving'))
-    print(body.get('email'))
-    userLat = float(body.get('myLat'))
-    userLng = float(body.get('myLng'))
+
+    print(body['myLat'])
+    print(body['myLng'])
+    print(body['foodName'])
+    print(body['serving'])
+    print(body['email'])
+    userLat = float(body['myLat'])
+    userLng = float(body['myLng'])
     g = geocoder.google([userLat, userLng], method='reverse')
     userStreet = g.street
     userCity = g.city
     userState = g.state
     userZip = g.postal
 
-    fb_lat = float(body.get('toLat'))
-    fb_lng = float(body.get('toLng'))
+    fb_lat = float(body['toLat'])
+    fb_lng = float(body['toLng'])
     g = geocoder.google([fb_lat, fb_lng], method='reverse')
     fb_street = g.street
     fb_city = g.city
