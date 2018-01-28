@@ -69,25 +69,24 @@ def allfoodBanks():
 #Choose which foodbank to deliver food to and get delivery estimates using UPS's Rate API
 @app.route('/requestDropoff', methods=['POST'])
 def requestDropoff():
-    body = request.form
-    # userStreet = body.get('userStreet') # \
-    # userCity  = body.get('userCity')    # |
-    # userState = body.get('userState')   # | Location of the user
-    # userZip = body.get('userZip')       # /
-    #how_long = body.get('how_long') #How long the food will last
+    # userStreet = request.args.get('userStreet') # \
+    # userCity  = request.args.get('userCity')    # |
+    # userState = request.args.get('userState')   # | Location of the user
+    # userZip = request.args.get('userZip')       # /
+    #how_long = request.args.get('how_long') #How long the food will last
 
-    userLat = float(body.get('latitude'))
-    userLong = float(body.get('longitude'))
+    userLat = float(request.args.get('latitude'))
+    userLong = float(request.args.get('longitude'))
     g = geocoder.google([userLat, userLong], method='reverse')
     userStreet = g.street
     userCity = g.city
     userState = g.state
     userZip = g.postal
 
-    print(userStreet)
-    print(userCity)
-    print(userState)
-    print(userZip)
+    # print(userStreet)
+    # print(userCity)
+    # print(userState)
+    # print(userZip)
     # Check if food bank will accept it
     # finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
     #     "street": 1, "city": 1, "state": 1, "zip": 1}))
