@@ -76,14 +76,18 @@ def requestDropoff():
     # userZip = body.get('userZip')       # /
     #how_long = body.get('how_long') #How long the food will last
 
-    userLat = int(body.get('latitude'))
-    userLong = int(body.get('longitude'))
+    userLat = float(body.get('latitude'))
+    userLong = float(body.get('longitude'))
     g = geocoder.google([userLat, userLong], method='reverse')
     userStreet = g.street
     userCity = g.city
     userState = g.state
     userZip = g.postal
 
+    print(userStreet)
+    print(userCity)
+    print(userState)
+    print(userZip)
     # Check if food bank will accept it
     # finder = list(foodbanks.find({"foodLast": {"$lt": int(how_long)} }, {"name" : 1, 
     #     "street": 1, "city": 1, "state": 1, "zip": 1}))
@@ -101,12 +105,11 @@ def requestDropoff():
         fb_state = fb['state']
         fb_zip = fb['zip']
 
-        print(index)
-        print(fb_name)
-        print(fb_street)
-        print(fb_city)
-        print(fb_state)
-        print(fb_zip)
+#        print(fb_name)
+#        print(fb_street)
+#        print(fb_city)
+#        print(fb_state)
+#        print(fb_zip)
         dictToSend = {
             "UPSSecurity": {
                 "UsernameToken": {
@@ -194,8 +197,8 @@ def requestDropoff():
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
         resDict = res.json()
-
-        total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']
+        
+        total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
         arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
         arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
@@ -216,7 +219,7 @@ def requestDropoff():
     fb_state = finder[index]['state']
     fb_zip = finder[index]['zip']
 
-    g = geocoder.google(fb_street + ", " + "fb_city" + " " + fb_state + ", US " + fb_zip)
+    g = geocoder.google(fb_street + ", " + fb_city + " " + fb_state + ", US " + fb_zip)
     lat, lng = g.latlng
     return jsonify({"success": True, "latitude": lat, "longitude": lng, "name": chosenFoodBank})
 
