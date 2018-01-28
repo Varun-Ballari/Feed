@@ -35,9 +35,9 @@ history = db.History
 #chosenSummary = {u'EstimatedArrival': {u'Arrival': {u'Date': u'20180130', u'Time': u'230000'}, u'DayOfWeek': u'TUE', u'Pickup': {u'Date': u'20180127', u'Time': u'000000'}, u'CustomerCenterCutoff': u'000000', u'BusinessDaysInTransit': u'1'}, u'GuaranteedIndicator': u'', u'Service': {u'Description': u'UPS Ground'}, u'SaturdayDelivery': u'0'}
 #chosenTotalCharge = "9.43"
 
-chosenFoodBank = None
-chosenSummary = None
-chosenTotalCharge = None
+# chosenFoodBank = None
+# chosenSummary = None
+# chosenTotalCharge = None
 
 @app.route('/')
 def index():
@@ -227,22 +227,130 @@ def sendFood():
     foodName = body.get('foodName') #How name of the food
     serving = body.get('serving') #How many people can the food serve
     email = body.get('email') #email of sender
+    fb_name = body.get('name') #name of Food Bank
     today = datetime.datetime.utcnow()
+
+    userLat = float(body.get('myLat'))
+    userLng = float(body.get('myLng'))
+    g = geocoder.google([userLat, userLng], method='reverse')
+    userStreet = g.street
+    userCity = g.city
+    userState = g.state
+    userZip = g.postal
+
+    fb_lat = float(body.get('toLat'))
+    fb_lng = float(body.get('toLng'))
+    g = geocoder.google([fb_lat, fb_lng], method='reverse')
+    fb_street = g.street
+    fb_city = g.city
+    fb_state = g.state
+    fb_zip = g.postal
+
 
     history.insert({
         'email': email,
-        'foodBankName': chosenFoodBank,
+        'foodBankName': fb_name,
         'serving': serving,
         'foodName': foodName,
         'Date': today
         })
 
-    arrivalDate = chosenSummary['EstimatedArrival']['Arrival']['Date']
-    arrivalTime = chosenSummary['EstimatedArrival']['Arrival']['Time']
-    businessDaysInTransit = chosenSummary['EstimatedArrival']['BusinessDaysInTransit']
-    pickupDate = chosenSummary['EstimatedArrival']['Pickup']['Date']
-    pickupTime = chosenSummary['EstimatedArrival']['Pickup']['Time']
-    dayOfWeek = chosenSummary['EstimatedArrival']['DayOfWeek']
+    dictToSend = {
+        "UPSSecurity": {
+            "UsernameToken": {
+                "Username": "raghavmittal",
+                "Password": "Cochackathon123"
+            },
+            "ServiceAccessToken": {
+                "AccessLicenseNumber": "AD3CD993372CEA8C"
+            }
+        },
+        "RateRequest": {
+            "Request": {
+                "RequestOption": "Ratetimeintransit",
+                "TransactionReference": {
+                    "CustomerContext": "Your Customer Context"
+                }
+            },
+            "Shipment": {
+                "Shipper": {
+                    "Name": "Shipper Name",
+                    "ShipperNumber": "Shipper Number",
+                    "Address": {
+                        "AddressLine": [userStreet],
+                        "City": userCity,
+                        "StateProvinceCode": userState,
+                        "PostalCode": userZip,
+                        "CountryCode": "US"
+                    }
+                },
+                "ShipTo": {
+                    "Name": fb_name,
+                    "Address": {
+                        "AddressLine": [fb_street],
+                        "City": fb_city,
+                        "StateProvinceCode": fb_state,
+                        "PostalCode": fb_zip,
+                        "CountryCode": "US"
+                    }
+                },
+                "ShipFrom": {
+                    "Name": "Ship From Name",
+                    "Address": {
+                        "AddressLine": [userStreet],
+                        "City": userCity,
+                        "StateProvinceCode": userState,
+                        "PostalCode": userZip,
+                        "CountryCode": "US"
+                    }
+                },
+                "Service": {
+                    "Code": "03",
+                    "Description": "Service Code Description"
+                },
+                "Package": {
+                    "PackagingType": {
+                        "Code": "02",
+                        "Description": "Rate"
+                    },
+                    "Dimensions": {
+                        "UnitOfMeasurement": {
+                            "Code": "IN",
+                            "Description": "inches"
+                        },
+                        "Length": "5",
+                        "Width": "4",
+                        "Height": "3"
+                    },
+                    "PackageWeight": {
+                        "UnitOfMeasurement": {
+                            "Code": "Lbs",
+                            "Description": "pounds"
+                        },
+                        "Weight": "1"
+                    }
+                },
+
+                "DeliveryTimeInformation": {
+                    "Pickup": {
+                        "Date": "20180127"
+                    },
+                    "PackageBillType": "03"
+                }
+            }
+        }
+    }
+    res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
+    resDict = res.json()
+        
+    total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
+    summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
+    arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
+    arrivalTime = summary_dict['EstimatedArrival']['Arrival']['Time']
+    businessDaysInTransit = summary_dict['EstimatedArrival']['BusinessDaysInTransit']
+    pickupDate = summary_dict['EstimatedArrival']['Pickup']['Date']
+    pickupTime = summary_dict['EstimatedArrival']['Pickup']['Time']
+    dayOfWeek = summary_dict['EstimatedArrival']['DayOfWeek']
 
     return jsonify({"success": True, "arrivalDate": arrivalDate, "arrivalTime": arrivalTime,
         "pickupDate": pickupDate, "pickupTime": pickupTime,
