@@ -234,31 +234,59 @@ def requestDropoff():
         return jsonify({"success": True, "latitude": lat, "longitude": lng, "name": chosenFoodBank})
 
 #Place the UPS request
-@app.route('/sendFood', methods=['POST'])
+@app.route('/sendFood', methods=['GET'])
 def sendFood():
-    body = request.form
-    print(body)
-    foodName = body['foodName'] #How name of the food
-    serving = body['serving'] #How many people can the food serve
-    email = body['email'] #email of sender
-    fb_name = body['name'] #name of Food Bank
+    # CODE BELOW for POST
+    # body = request.form
+    # print(body)
+    # foodName = body['foodName'] #How name of the food
+    # serving = body['serving'] #How many people can the food serve
+    # email = body['email'] #email of sender
+    # fb_name = body['name'] #name of Food Bank
+    # today = datetime.datetime.utcnow()
+
+    # print(body['myLat'])
+    # print(body['myLng'])
+    # print(body['foodName'])
+    # print(body['serving'])
+    # print(body['email'])
+    # userLat = float(body['myLat'])
+    # userLng = float(body['myLng'])
+    # g = geocoder.google([userLat, userLng], method='reverse')
+    # userStreet = g.street
+    # userCity = g.city
+    # userState = g.state
+    # userZip = g.postal
+
+    # fb_lat = float(body['toLat'])
+    # fb_lng = float(body['toLng'])
+    # g = geocoder.google([fb_lat, fb_lng], method='reverse')
+    # fb_street = g.street
+    # fb_city = g.city
+    # fb_state = g.state
+    # fb_zip = g.postal
+
+    foodName = request.args.get('foodName') #How name of the food
+    serving = request.args.get('serving') #How many people can the food serve
+    email = request.args.get('email') #email of sender
+    fb_name = request.args.get('name') #name of Food Bank
     today = datetime.datetime.utcnow()
 
-    print(body['myLat'])
-    print(body['myLng'])
-    print(body['foodName'])
-    print(body['serving'])
-    print(body['email'])
-    userLat = float(body['myLat'])
-    userLng = float(body['myLng'])
+    print(request.args.get('myLat'))
+    print(request.args.get('myLng'))
+    print(request.args.get('foodName'))
+    print(request.args.get('serving'))
+    print(request.args.get('email'))
+    userLat = float(request.args.get('myLat'))
+    userLng = float(request.args.get('myLng'))
     g = geocoder.google([userLat, userLng], method='reverse')
     userStreet = g.street
     userCity = g.city
     userState = g.state
     userZip = g.postal
 
-    fb_lat = float(body['toLat'])
-    fb_lng = float(body['toLng'])
+    fb_lat = float(request.args.get('toLat'))
+    fb_lng = float(request.args.get('toLng'))
     g = geocoder.google([fb_lat, fb_lng], method='reverse')
     fb_street = g.street
     fb_city = g.city
