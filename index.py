@@ -254,19 +254,7 @@ def sendFood():
     fb_state = g.state
     fb_zip = g.postal
 
-    print(email)
-    print(fb_name)
-    print(serving)
-    print(foodName)
-    print(today)
-    
-    history.insert({
-                   "email": email,
-                   "foodBankName": fb_name,
-                   "serving": serving,
-                   "foodName": foodName,
-                   "date": today
-                   })
+    result = history.insert_one({"email": email, "foodBankName": fb_name, "serving": serving, "foodName": foodName, "date": today})
 
     dictToSend = {
         "UPSSecurity": {
