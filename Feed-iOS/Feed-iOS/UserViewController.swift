@@ -44,7 +44,9 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     if success {
                         self.data = json["userHistoryList"] as! [[String:Any]]
                         
-                        self.performSelector(onMainThread: #selector(self.reloadData), with: nil, waitUntilDone: true)
+                        DispatchQueue.main.async {
+                            self.reloadData()
+                        }
                         
                     } else {
                         
@@ -95,7 +97,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.automaticallyAdjustsScrollViewInsets = false
         tableView.allowsSelection = false
         
-        self.performSelector(inBackground: #selector(getData), with: nil)
+        getData()
 
     }
 
@@ -115,7 +117,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.fed?.text = self.data[indexPath.row]["serving"] as? String
         cell.organization?.text = self.data[indexPath.row]["foodBank"] as? String
         
-//        }
         let num = (self.data[indexPath.row]["serving"] as? NSString)?.integerValue
         
         cell.imageView?.image = UIImage(named:"wheat1")

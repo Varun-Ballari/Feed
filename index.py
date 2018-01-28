@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, json
 import os
 import ast
 import pymongo
@@ -203,7 +203,7 @@ def requestDropoff():
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
         resDict = res.json()
-        
+
         total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
         arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
@@ -382,7 +382,7 @@ def sendFood():
     }
     res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
     resDict = res.json()
-        
+
     total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
     summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
     arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
