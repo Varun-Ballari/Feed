@@ -413,7 +413,7 @@ def sendFood():
 
     return jsonify({"success": True, "arrivalDate": arrivalDate, "arrivalTime": arrivalTime,
         "pickupDate": pickupDate, "pickupTime": pickupTime,
-        "businessDaysInTransit": businessDaysInTransit, "dayOfWeek":dayOfWeek} )
+        "businessDaysInTransit": businessDaysInTransit, "dayOfWeek":dayOfWeek, "charge":total_charges} )
 
 
 @app.route('/userHistory', methods=['GET'])
