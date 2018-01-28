@@ -71,10 +71,11 @@ def allfoodBanks():
     lat_lngs = list()
     foodBankList = list()
     for x in finder:
-        foodBankList.append(x)
         g = geocoder.google(x["street"] + ", " + x["city"] + " " + x["state"] + ", US " + x["zip"])
         t = g.latlng
-        lat_lngs.append(t)
+        if t is not None:
+            lat_lngs.append(t)
+            foodBankList.append(x)
     return jsonify({"success": True, "foodBankList" : foodBankList, "lat, lng": lat_lngs})
 
 
@@ -258,13 +259,14 @@ def sendFood():
     print(serving)
     print(foodName)
     print(today)
+    
     history.insert({
-        'email': email,
-        'foodBankName': fb_name,
-        'serving': serving,
-        'foodName': foodName,
-        'Date': today
-        })
+                   "email": email,
+                   "foodBankName": fb_name,
+                   "serving": serving,
+                   "foodName": foodName,
+                   "date": today
+                   })
 
     dictToSend = {
         "UPSSecurity": {
