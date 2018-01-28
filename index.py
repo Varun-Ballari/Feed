@@ -239,9 +239,13 @@ def sendFood():
     email = body.get('email') #email of sender
     fb_name = body.get('name') #name of Food Bank
     today = datetime.datetime.utcnow()
+    print(type('myLat'))
+    print(type('myLng'))
     print(body.get('myLat'))
     print(body.get('myLng'))
-
+    print(body.get('foodName'))
+    print(body.get('serving'))
+    print(body.get('email'))
     userLat = float(body.get('myLat'))
     userLng = float(body.get('myLng'))
     g = geocoder.google([userLat, userLng], method='reverse')
