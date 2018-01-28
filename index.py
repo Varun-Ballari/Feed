@@ -299,6 +299,8 @@ def sendFood():
     fb_state = g.state
     fb_zip = g.postal
 
+    print(fb_street, fb_city, fb_state, fb_zip)
+
     result = history.insert_one({"email": email, "foodBank": fb_name, "serving": serving, "foodName": foodName, "date": today})
 
     dictToSend = {
