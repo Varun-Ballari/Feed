@@ -81,6 +81,5 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         captureSession.stopRunning()
         self.performSegue(withIdentifier: "goToSend", sender: self)
     }
-    
 }
 

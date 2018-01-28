@@ -315,6 +315,13 @@
                                     <action selector="captureImage:" destination="JHO-ZA-gU4" eventType="touchUpInside" id="uG7-KK-s37"/>
                                 </connections>
                             </button>
+                            <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bY0-jT-idb">
+                                <rect key="frame" x="67" y="342" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <segue destination="czg-th-pdO" kind="embed" id="GJl-Nv-nvf"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -348,10 +355,10 @@
             </objects>
             <point key="canvasLocation" x="2047" y="828"/>
         </scene>
-        <!--View Controller-->
+        <!--Send Donation View Controller-->
         <scene sceneID="GiN-jm-JgH">
             <objects>
-                <viewController id="fDE-gS-EnV" sceneMemberID="viewController">
+                <viewController id="fDE-gS-EnV" customClass="SendDonationViewController" customModule="Feed_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mwz-BX-D54">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -424,6 +431,20 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dbs-6R-wDR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1018" y="133"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="o2N-e2-lUx">
+            <objects>
+                <viewController id="czg-th-pdO" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qvG-xv-Qid">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Onv-bF-BKc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2045" y="1304"/>
         </scene>
     </scenes>
     <resources>
