@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, json
 import os
 import ast
 import pymongo
@@ -203,7 +203,7 @@ def requestDropoff():
         }
         res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
         resDict = res.json()
-        
+
         total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
         summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
         arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
@@ -232,29 +232,32 @@ def requestDropoff():
 #Place the UPS request
 @app.route('/sendFood', methods=['POST'])
 def sendFood():
-    body = request.form
+    body = request.data
     print(body)
-    foodName = body['foodName'] #How name of the food
-    serving = body['serving'] #How many people can the food serve
-    email = body['email'] #email of sender
-    fb_name = body['name'] #name of Food Bank
+    dataDict = json.loads(body)
+
+    print(dataDict['foodName'])
+    foodName = dataDict['foodName'] #How name of the food
+    serving = dataDict['serving'] #How many people can the food serve
+    email = dataDict['email'] #email of sender
+    fb_name = dataDict['name'] #name of Food Bank
     today = datetime.datetime.utcnow()
 
-    print(body['myLat'])
-    print(body['myLng'])
-    print(body['foodName'])
-    print(body['serving'])
-    print(body['email'])
-    userLat = float(body['myLat'])
-    userLng = float(body['myLng'])
+    print(dataDict['myLat'])
+    print(dataDict['myLng'])
+    print(dataDict['foodName'])
+    print(dataDict['serving'])
+    print(dataDict['email'])
+    userLat = float(dataDict['myLat'])
+    userLng = float(dataDict['myLng'])
     g = geocoder.google([userLat, userLng], method='reverse')
     userStreet = g.street
     userCity = g.city
     userState = g.state
     userZip = g.postal
 
-    fb_lat = float(body['toLat'])
-    fb_lng = float(body['toLng'])
+    fb_lat = float(dataDict['toLat'])
+    fb_lng = float(dataDict['toLng'])
     g = geocoder.google([fb_lat, fb_lng], method='reverse')
     fb_street = g.street
     fb_city = g.city
@@ -350,7 +353,7 @@ def sendFood():
     }
     res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
     resDict = res.json()
-        
+
     total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
     summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
     arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']

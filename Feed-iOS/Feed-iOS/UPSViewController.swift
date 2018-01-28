@@ -39,14 +39,20 @@ class UPSViewController: UIViewController {
     
     func postRequest() {
         let urlstring = "https://feed-coc.herokuapp.com/sendFood"
-        
+
         let url = URL(string: urlstring)!
         let session = URLSession.shared
         let request = NSMutableURLRequest(url: url)
         request.httpMethod = "POST"
         
-        let json: [String: Any] = ["foodName": foodName, "serving": serving, "myLat": myLat, "myLng": myLng, "toLat": toLat, "toLng": toLng, "name": name]
+        let lat = String(format: "%f", myLat)
+        let lng = String(format: "%f", myLng)
+        let tlat = String(format: "%f", toLat)
+        let tlng = String(format: "%f", myLat)
+
         
+        let json: [String: String] = ["foodName": foodName, "serving": serving, "myLat": lat, "myLng": lng, "toLat": tlat, "toLng": tlng, "name": name]
+        print(json)
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         request.httpBody = jsonData
         

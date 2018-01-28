@@ -42,7 +42,9 @@ class ViewController: UIViewController {
         let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
             guard let _: Data = data, let _: URLResponse = response, error == nil else {
 
-                self.performSelector(onMainThread: #selector(self.red), with: nil, waitUntilDone: false)
+                DispatchQueue.main.async {
+                    self.incorrect.alpha = 1
+                }
                 return
             }
             let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
@@ -53,14 +55,17 @@ class ViewController: UIViewController {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                     let success = json["success"] as? Bool {
                     if success {
-                        
-                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                        appDelegate.username = json["email"] as! String
-                        self.performSelector(onMainThread: #selector(self.goToMain), with: nil, waitUntilDone: false)
+
+                        DispatchQueue.main.async {
+                            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                            appDelegate.username = json["email"] as! String
+                            self.performSegue(withIdentifier: "goToMain", sender: self)
+                        }
                    
                     } else {
-                        
-                        self.performSelector(onMainThread: #selector(self.red), with: nil, waitUntilDone: false)
+                        DispatchQueue.main.async {
+                            self.incorrect.alpha = 1
+                        }
                     }
                 }
             } catch {
@@ -71,7 +76,7 @@ class ViewController: UIViewController {
         task.resume()
     }
     
-    @objc func red() {
+    func red() {
         self.incorrect.alpha = 1
     }
     

@@ -56,12 +56,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                     let success = json["success"] as? Bool {
                     if success {
-
+                        var j = 0
                         for i in (json["lat, lng"] as? [[Double]])! {
                             let coordinate = CLLocationCoordinate2D(latitude: i[0], longitude: i[1])
-
+                            let dict = json["foodBankList"] as? [[String:Any]]
+                            let name = dict![j]["name"] as? String
+                            j = j + 1
                             DispatchQueue.main.async {
-                                self.putOnMap(coordinate: coordinate)
+                                self.putOnMap(coordinate: coordinate, name: name!)
                             }
                         }
                         
@@ -78,12 +80,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 
     }
     
-    func putOnMap(coordinate: CLLocationCoordinate2D) {
-        let viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 2000, 2000)
-        self.map.setRegion(viewRegion, animated: false)
+    func putOnMap(coordinate: CLLocationCoordinate2D, name: String) {
+//        let viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 2000, 2000)
+//        self.map.setRegion(viewRegion, animated: false)
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
-        self.map.addAnnotation(self.annotation)
+        annotation.title = name
+        self.map.addAnnotation(annotation)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -98,6 +101,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 let viewRegion = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 2000, 2000)
                 map.setRegion(viewRegion, animated: false)
                 annotation.coordinate = userLocation.coordinate
+                annotation.title = "Your Location"
+
                 self.map.addAnnotation(self.annotation)
 
             }
