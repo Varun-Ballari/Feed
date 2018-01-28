@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var incorrect: UILabel!
     @IBOutlet var round: UIView!
     
+    var spinner: UIActivityIndicatorView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         round.layer.cornerRadius = 10
@@ -30,6 +32,15 @@ class ViewController: UIViewController {
     
     @IBAction func login(_ sender: Any) {
         incorrect.alpha = 0
+        
+        spinner = UIActivityIndicatorView.init(frame: CGRect(x: self.view.frame.width/2-50, y:  self.view.frame.height/2-50, width: 100, height: 100))
+        
+        self.view.addSubview(spinner)
+        
+        UIView.animate(withDuration: 0.5) {
+            self.spinner.startAnimating()
+        }
+        
         
         let urlstring = "https://feed-coc.herokuapp.com/users?email=" + email.text! + "&password=" + password.text!
         
@@ -57,6 +68,7 @@ class ViewController: UIViewController {
                     if success {
 
                         DispatchQueue.main.async {
+                            self.spinner.stopAnimating()
                             let appDelegate = UIApplication.shared.delegate as! AppDelegate
                             appDelegate.username = json["email"] as! String
                             self.performSegue(withIdentifier: "goToMain", sender: self)
@@ -64,6 +76,7 @@ class ViewController: UIViewController {
                    
                     } else {
                         DispatchQueue.main.async {
+                            self.spinner.stopAnimating()
                             self.incorrect.alpha = 1
                         }
                     }

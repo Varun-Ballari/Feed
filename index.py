@@ -84,6 +84,8 @@ def allfoodBanks():
 def requestDropoff():
     userLat = float(request.args.get('latitude'))
     userLong = float(request.args.get('longitude'))
+    print(userLat, userLong)
+
     g = geocoder.google([userLat, userLong], method='reverse')
     userStreet = g.street
     userCity = g.city
@@ -225,9 +227,13 @@ def requestDropoff():
     fb_state = finder[index]['state']
     fb_zip = finder[index]['zip']
 
+
+    print(fb_street, fb_city, fb_state, fb_zip )
+
     g = geocoder.google(fb_street + ", " + fb_city + " " + fb_state + ", US " + fb_zip)
     lat, lng = g.latlng
-    if lat == None or lng == None:
+    print(lat, lng)
+    if g.latlng is None:
         # For now, returning a true value so it doesn't break
         return jsonify({"success": True, "latitude": 33.7643, "longitude": -80.223, "name": chosenFoodBank})
     else:
