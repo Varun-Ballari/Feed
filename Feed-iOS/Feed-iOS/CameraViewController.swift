@@ -19,6 +19,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBOutlet weak var border: UIView!
     var captureSession: AVCaptureSession!
     
+    var spinner:UIActivityIndicatorView!
+    
     var food: String!
     var toLocation: String = ""
     var toLocLat: Double = 0.0
@@ -95,6 +97,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
+        
+        spinner = UIActivityIndicatorView.init(frame: CGRect(x: self.view.frame.width/2-50, y:  self.view.frame.height/2-50, width: 100, height: 100))
+        
+        self.view.addSubview(spinner)
+        self.spinner.layer.zPosition = 1
+        
+        UIView.animate(withDuration: 0.5) {
+            self.spinner.startAnimating()
+        }
+        
         let lat = String(format: "%f", (appDelegate.currentLocation?.coordinate.latitude)!)
         let lng = String(format: "%f", (appDelegate.currentLocation?.coordinate.longitude)!)
 
@@ -122,9 +134,17 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                         self.toLocation = json["name"] as! String
                         self.toLocLat = json["latitude"] as! Double
                         self.toLocLong = json["longitude"] as! Double
-                        self.performSelector(onMainThread: #selector(self.goToSend), with:  nil, waitUntilDone: false)
+                        
+                        DispatchQueue.main.async {
+                            self.spinner.stopAnimating()
+                            self.performSegue(withIdentifier: "goToSend", sender: self)
+                        }
 
                     } else {
+                        DispatchQueue.main.async {
+                            self.spinner.stopAnimating()
+                        }
+
                     }
                 }
             } catch {
@@ -133,11 +153,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         
         task.resume()
-    }
-    
-    
-    @objc func goToSend() {
-        self.performSegue(withIdentifier: "goToSend", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

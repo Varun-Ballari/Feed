@@ -36,11 +36,11 @@ class ViewController: UIViewController {
         spinner = UIActivityIndicatorView.init(frame: CGRect(x: self.view.frame.width/2-50, y:  self.view.frame.height/2-50, width: 100, height: 100))
         
         self.view.addSubview(spinner)
+        self.spinner.layer.zPosition = 1
         
         UIView.animate(withDuration: 0.5) {
             self.spinner.startAnimating()
         }
-        
         
         let urlstring = "https://feed-coc.herokuapp.com/users?email=" + email.text! + "&password=" + password.text!
         

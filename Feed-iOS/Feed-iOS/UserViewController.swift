@@ -102,7 +102,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let label3 = UILabel(frame: CGRect(x: self.header.frame.width/2 - 150, y: self.header.frame.height - 120, width: 300, height: 50))
         label3.textAlignment = .center
-        label3.text = "\(String(describing: data.count)) Donations Made with ❤️ By"
+        label3.text = "\(String(describing: data.count)) donations made with ❤️ by"
         label3.font = UIFont(name: "System-Thin", size: 20.0)
 
         let name = UILabel(frame: CGRect(x: self.view.frame.width/2 - (self.view.frame.width - 100)/2, y: self.header.frame.height - 80, width: self.view.frame.width - 100, height: 30))

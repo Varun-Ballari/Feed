@@ -389,6 +389,8 @@ def sendFood():
     res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
     resDict = res.json()
 
+    print("Data back: ", res.json)
+
     total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
     summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
     arrivalDate = summary_dict['EstimatedArrival']['Arrival']['Date']
