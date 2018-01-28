@@ -17,6 +17,7 @@ class SendDonationViewController: UIViewController, MKMapViewDelegate, CLLocatio
     private var currentLocation: CLLocation?
     let annotation = MKPointAnnotation()
     
+    var food: String!
     var toLocation: String!
     var toLocLat: Double!
     var toLocLong: Double!

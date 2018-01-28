@@ -20,9 +20,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     var captureSession: AVCaptureSession!
     
     var food: String!
-    var toLocation: String!
-    var toLocLat: Double!
-    var toLocLong: Double!
+    var toLocation: String = ""
+    var toLocLat: Double = 0.0
+    var toLocLong: Double = 0.0
     
     override func viewDidAppear(_ animated: Bool) {
         captureSession.startRunning()
@@ -81,6 +81,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             
             DispatchQueue.main.async {
                 self.label.text = "\(firstObservation.identifier) \(firstObservation.confidence * 100)"
+                self.food = firstObservation.identifier
             }
         }
         
@@ -89,9 +90,14 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     @IBAction func captureImage(_ sender: Any) {
         captureSession.stopRunning()
+    
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let urlstring = "https://feed-coc.herokuapp.com/requestDropoff?latitude=" + String(describing: appDelegate.currentLocation?.coordinate.latitude) + "&longitude=" + String(describing: appDelegate.currentLocation?.coordinate.longitude)
-        
+
+        let lat = String(format: "%f", (appDelegate.currentLocation?.coordinate.latitude)!)
+        let lng = String(format: "%f", (appDelegate.currentLocation?.coordinate.longitude)!)
+
+        let urlstring = "https://feed-coc.herokuapp.com/requestDropoff?latitude=" + lat + "&longitude=" + lng
+        print(urlstring)
         let url = URL(string: urlstring)!
         let session = URLSession.shared
         let request = NSMutableURLRequest(url: url)
@@ -107,10 +113,14 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             do {
                 if let data = data,
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                    let success = json["success"] as? Bool {
+                    let success = json["success"] as? Bool
+                    {
                     if success {
-                        
-                        self.performSegue(withIdentifier: "goToSend", sender: self)
+                        print(json)
+                        self.toLocation = json["name"] as! String
+                        self.toLocLat = json["latitude"] as! Double
+                        self.toLocLong = json["longitude"] as! Double
+                        self.performSelector(onMainThread: #selector(self.goToSend), with:  nil, waitUntilDone: false)
 
                     } else {
                     }
@@ -124,11 +134,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     
+    @objc func goToSend() {
+        self.performSegue(withIdentifier: "goToSend", sender: self)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let vc = segue.destination as! SendDonationViewController
         vc.toLocation = self.toLocation
         vc.toLocLat = self.toLocLat
         vc.toLocLong = self.toLocLong
+        vc.food = self.food
     }
 }
 
