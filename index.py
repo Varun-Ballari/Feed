@@ -217,7 +217,7 @@ def requestDropoff():
 @app.route('/userHistory', methods=['GET'])
 def userHistory():
     email = request.args.get('email')
-    finder = list(foodbanks.find({"email": email}, {"_id": 0}))
+    finder = list(history.find({"email": email}, {"_id": 0}))
     return jsonify({"success": True, "userHistoryList" : finder})
 
 
