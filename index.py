@@ -374,7 +374,7 @@ def userHistory():
     finder = list(history.find({"email": email}, {"_id": 0}))
     serving_sum = 0
     for x in finder:
-        sum += int(x["serving"])
+        serving_sum += int(x["serving"])
     return jsonify({"success": True, "userHistoryList" : finder, "sum" : serving_sum})
 
 
