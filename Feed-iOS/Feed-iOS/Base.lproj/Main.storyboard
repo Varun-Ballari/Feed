@@ -219,7 +219,7 @@
             </objects>
             <point key="canvasLocation" x="136.80000000000001" y="133.00492610837438"/>
         </scene>
-        <!--Item 2-->
+        <!--Profile-->
         <scene sceneID="P0o-EF-RtU">
             <objects>
                 <viewController id="6KI-0A-6Ub" customClass="UserViewController" customModule="Feed_iOS" customModuleProvider="target" sceneMemberID="viewController">
@@ -262,7 +262,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="aqE-Vf-PkL"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 2" id="qj9-rS-fWR"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="avatar" selectedImage="avatar" id="qj9-rS-fWR"/>
                     <connections>
                         <outlet property="tableView" destination="atm-4Q-acC" id="3ty-Fp-Kvo"/>
                     </connections>
@@ -271,7 +271,7 @@
             </objects>
             <point key="canvasLocation" x="2029.5999999999999" y="132.26600985221674"/>
         </scene>
-        <!--Item-->
+        <!--Donate-->
         <scene sceneID="2Q1-0w-EfI">
             <objects>
                 <viewController id="JHO-ZA-gU4" customClass="CameraViewController" customModule="Feed_iOS" customModuleProvider="target" sceneMemberID="viewController">
@@ -281,7 +281,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="mQt-1d-AxE"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="zVP-im-o62"/>
+                    <tabBarItem key="tabBarItem" title="Donate" image="donation" selectedImage="donation" id="zVP-im-o62"/>
                     <connections>
                         <segue destination="fDE-gS-EnV" kind="show" id="rh3-EU-X6S"/>
                     </connections>
@@ -305,7 +305,7 @@
             </objects>
             <point key="canvasLocation" x="2978" y="828"/>
         </scene>
-        <!--Item 1-->
+        <!--Maps-->
         <scene sceneID="Xxa-kk-3fM">
             <objects>
                 <viewController id="LkA-yA-fON" customClass="MapViewController" customModule="Feed_iOS" customModuleProvider="target" sceneMemberID="viewController">
@@ -326,7 +326,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="w3D-yz-tPD"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 1" id="Xdp-89-hxD"/>
+                    <tabBarItem key="tabBarItem" title="Maps" image="placeholder" selectedImage="placeholder" id="Xdp-89-hxD"/>
                     <connections>
                         <outlet property="map" destination="DVn-7s-58T" id="WPp-gh-ONd"/>
                     </connections>
@@ -357,6 +357,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="avatar" width="21" height="21"/>
+        <image name="donation" width="21" height="21"/>
         <image name="leaf" width="170" height="170"/>
+        <image name="placeholder" width="21" height="21"/>
     </resources>
 </document>

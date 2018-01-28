@@ -13,6 +13,7 @@
 		1187E4FE201CFB1E0058469E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1187E4FD201CFB1E0058469E /* Assets.xcassets */; };
 		1187E501201CFB1E0058469E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1187E4FF201CFB1E0058469E /* LaunchScreen.storyboard */; };
 		1187E509201D33700058469E /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187E508201D33700058469E /* CameraViewController.swift */; };
+		9A1F8837201D637200E1EF41 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9A1F8836201D637200E1EF41 /* Resnet50.mlmodel */; };
 		9A9DF443201D3B5100E983BC /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9DF442201D3B5100E983BC /* MapViewController.swift */; };
 		9A9DF445201D430100E983BC /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9DF444201D430100E983BC /* UserViewController.swift */; };
 		9A9DF448201D458100E983BC /* MKGradientGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9DF446201D458100E983BC /* MKGradientGenerator.swift */; };
@@ -28,6 +29,7 @@
 		1187E500201CFB1E0058469E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1187E502201CFB1E0058469E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1187E508201D33700058469E /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		9A1F8836201D637200E1EF41 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = Resnet50.mlmodel; path = ../../../../Downloads/Resnet50.mlmodel; sourceTree = "<group>"; };
 		9A9DF442201D3B5100E983BC /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		9A9DF444201D430100E983BC /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		9A9DF446201D458100E983BC /* MKGradientGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKGradientGenerator.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				1187E508201D33700058469E /* CameraViewController.swift */,
 				9A9DF446201D458100E983BC /* MKGradientGenerator.swift */,
 				9A9DF447201D458100E983BC /* MKRingProgressView.swift */,
+				9A1F8836201D637200E1EF41 /* Resnet50.mlmodel */,
 				1187E4FD201CFB1E0058469E /* Assets.xcassets */,
 				1187E4FF201CFB1E0058469E /* LaunchScreen.storyboard */,
 				1187E502201CFB1E0058469E /* Info.plist */,
@@ -155,9 +158,9 @@
 				1187E4F9201CFB1E0058469E /* ViewController.swift in Sources */,
 				9A9DF445201D430100E983BC /* UserViewController.swift in Sources */,
 				1187E4F7201CFB1E0058469E /* AppDelegate.swift in Sources */,
-				1187E511201D5A870058469E /* Resnet50.mlmodel in Sources */,
 				1187E509201D33700058469E /* CameraViewController.swift in Sources */,
 				9A9DF443201D3B5100E983BC /* MapViewController.swift in Sources */,
+				9A1F8837201D637200E1EF41 /* Resnet50.mlmodel in Sources */,
 				9A9DF448201D458100E983BC /* MKGradientGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -298,12 +301,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-<<<<<<< HEAD
-				DEVELOPMENT_TEAM = LWRX96C84L;
-=======
 				COREML_CODEGEN_LANGUAGE = Swift;
-				DEVELOPMENT_TEAM = 58Q5L49C5J;
->>>>>>> 51bdcccbc86e56cf9e9da5954f28e89a23cd3dba
+				DEVELOPMENT_TEAM = LWRX96C84L;
 				INFOPLIST_FILE = "Feed-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Varun-Ballari.Feed-iOS";

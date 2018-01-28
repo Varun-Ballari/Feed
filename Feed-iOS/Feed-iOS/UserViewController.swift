@@ -60,16 +60,16 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! UITableViewCell
+//        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! UITableViewCell
+//
+////        headerView.customLabel.text = content[section].name
+////        headerView.sectionNumber = section
+////        headerView.delegate = self
+//
+//        return headerView
         
-//        headerView.customLabel.text = content[section].name
-//        headerView.sectionNumber = section
-//        headerView.delegate = self
-        
-        return headerView
-        
-//        let v = UIView()
-//        v.backgroundColor = UColor(
+        let v = UIView()
+        v.backgroundColor = .green
 //
 //        let label = UILabel(frame: CGRect(x: 0, y: 0, width: v.frame.width, height: v.frame.height))
 //        label.textAlignment = .center
@@ -77,7 +77,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 //        label.font = UIFont.boldSystemFont(ofSize: 12.0)
 
         
-        return headerView
+        return v
     }
 
 }
