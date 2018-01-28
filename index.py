@@ -233,11 +233,15 @@ def requestDropoff():
 @app.route('/sendFood', methods=['POST'])
 def sendFood():
     body = request.form
+    print(body)
     foodName = body.get('foodName') #How name of the food
     serving = body.get('serving') #How many people can the food serve
     email = body.get('email') #email of sender
     fb_name = body.get('name') #name of Food Bank
     today = datetime.datetime.utcnow()
+    print(body.get('myLat'))
+    print(body.get('myLng'))
+
     userLat = float(body.get('myLat'))
     userLng = float(body.get('myLng'))
     g = geocoder.google([userLat, userLng], method='reverse')
