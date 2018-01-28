@@ -293,9 +293,7 @@ def sendFood():
     fb_state = g.state
     fb_zip = g.postal
 
-    print(fb_lat, fb_lng, fb_zip, g)
-
-    result = history.insert_one({"email": email, "foodBankName": fb_name, "serving": serving, "foodName": foodName, "date": today})
+    result = history.insert_one({"email": email, "foodBank": fb_name, "serving": serving, "foodName": foodName, "date": today})
 
     dictToSend = {
         "UPSSecurity": {
@@ -384,8 +382,6 @@ def sendFood():
     }
     res = requests.post('https://wwwcie.ups.com/rest/Rate', json=dictToSend)
     resDict = res.json()
-
-    print(resDict)
 
     total_charges = resDict['RateResponse']['RatedShipment']['TotalCharges']['MonetaryValue']
     summary_dict = resDict['RateResponse']['RatedShipment']['TimeInTransit']['ServiceSummary']
