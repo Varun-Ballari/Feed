@@ -35,6 +35,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.navigationController?.isNavigationBarHidden = true
+
         captureButtonView.layer.cornerRadius = captureButtonView.frame.size.width/2
         captureButtonView.clipsToBounds = true
         

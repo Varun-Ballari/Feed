@@ -13,10 +13,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var email: UITextField!
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var incorrect: UILabel!
+    @IBOutlet var round: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        round.layer.cornerRadius = 10
+        round.clipsToBounds = true
         incorrect.alpha = 0
         self.hideKeyboardWhenTappedAround()
     }
@@ -36,17 +38,11 @@ class ViewController: UIViewController {
         let request = NSMutableURLRequest(url: url)
         request.httpMethod = "GET"
 
-//        let json: [String: Any] = ["email": email.text!, "password": password.text!]
-////        let paramString = "email=" + email.text! + "&password=" + password.text!
-//        let jsonData = try? JSONSerialization.data(withJSONObject: json)
-//        request.httpBody = jsonData
-//        print(request)
-
-//        request.httpBody = paramString.data(using: String.Encoding.utf8)
         
         let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
             guard let _: Data = data, let _: URLResponse = response, error == nil else {
-                self.incorrect.alpha = 1
+
+                self.performSelector(onMainThread: #selector(self.red), with: nil, waitUntilDone: false)
                 return
             }
             let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
@@ -60,10 +56,11 @@ class ViewController: UIViewController {
                         
                         let appDelegate = UIApplication.shared.delegate as! AppDelegate
                         appDelegate.username = json["email"] as! String
-                        
-                        self.performSegue(withIdentifier: "goToMain", sender: self)
+                        self.performSelector(onMainThread: #selector(self.goToMain), with: nil, waitUntilDone: false)
+                   
                     } else {
-                        self.incorrect.alpha = 1
+                        
+                        self.performSelector(onMainThread: #selector(self.red), with: nil, waitUntilDone: false)
                     }
                 }
             } catch {
@@ -72,6 +69,14 @@ class ViewController: UIViewController {
         }
         
         task.resume()
+    }
+    
+    @objc func red() {
+        self.incorrect.alpha = 1
+    }
+    
+    @objc func goToMain() {
+        self.performSegue(withIdentifier: "goToMain", sender: self)
     }
 }
 

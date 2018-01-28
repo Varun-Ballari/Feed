@@ -17,16 +17,36 @@ class SendDonationViewController: UIViewController, MKMapViewDelegate, CLLocatio
     private var currentLocation: CLLocation?
     let annotation = MKPointAnnotation()
     
+    @IBOutlet var foodLabel: UITextField!
+    @IBOutlet var feedsLabel: UITextField!
+    @IBOutlet var goodUntilLabel: UITextField!
+    @IBOutlet var pickUpLabel: UITextField!
+    @IBOutlet var destinationLabel: UITextField!
+    
     var food: String!
     var toLocation: String!
     var toLocLat: Double!
     var toLocLong: Double!
+
+    @IBOutlet var round: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        round.layer.cornerRadius = 10
+        round.clipsToBounds = true
+        
+        self.navigationController?.isNavigationBarHidden = true
+        
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(goBack(recognizer:)))
         swipeRight.direction = .right
         self.view.addGestureRecognizer(swipeRight)
+        
+        foodLabel.text = food
+        destinationLabel.text = toLocation
+        goodUntilLabel.text = "10"
+        feedsLabel.text = "6"
+        pickUpLabel.text = "Your Location"
         
         map.delegate = self
         
@@ -142,5 +162,23 @@ class SendDonationViewController: UIViewController, MKMapViewDelegate, CLLocatio
         renderer.strokeColor = UIColor.red
         renderer.lineWidth = 4.0
         return renderer
+    }
+    
+    @IBAction func goToUPS(_ sender: Any) {
+        self.performSegue(withIdentifier: "goToUPS", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        
+        let vc = segue.destination as! UPSViewController
+        vc.foodName = self.foodLabel.text
+        vc.myLat = appDelegate.currentLocation?.coordinate.latitude
+        vc.myLng = appDelegate.currentLocation?.coordinate.longitude
+        vc.toLat = self.toLocLat
+        vc.toLng = self.toLocLong
+        vc.name = self.toLocation
+        vc.serving = self.feedsLabel.text
     }
 }

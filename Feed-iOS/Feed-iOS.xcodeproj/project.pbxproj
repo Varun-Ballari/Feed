@@ -16,6 +16,7 @@
 		11CD203D201D6BB60008E301 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 11CD203C201D6BB60008E301 /* Resnet50.mlmodel */; };
 		11CD203F201D753D0008E301 /* SendDonationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD203E201D753D0008E301 /* SendDonationViewController.swift */; };
 		9A1F8839201D941800E1EF41 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A1F8838201D941800E1EF41 /* TableViewCell.swift */; };
+		9A1F883B201DB58700E1EF41 /* UPSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A1F883A201DB58700E1EF41 /* UPSViewController.swift */; };
 		9A9DF443201D3B5100E983BC /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9DF442201D3B5100E983BC /* MapViewController.swift */; };
 		9A9DF445201D430100E983BC /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9DF444201D430100E983BC /* UserViewController.swift */; };
 		9A9DF448201D458100E983BC /* MKGradientGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9DF446201D458100E983BC /* MKGradientGenerator.swift */; };
@@ -34,6 +35,7 @@
 		11CD203C201D6BB60008E301 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
 		11CD203E201D753D0008E301 /* SendDonationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendDonationViewController.swift; sourceTree = "<group>"; };
 		9A1F8838201D941800E1EF41 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		9A1F883A201DB58700E1EF41 /* UPSViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSViewController.swift; sourceTree = "<group>"; };
 		9A9DF442201D3B5100E983BC /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		9A9DF444201D430100E983BC /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		9A9DF446201D458100E983BC /* MKGradientGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKGradientGenerator.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				9A9DF444201D430100E983BC /* UserViewController.swift */,
 				1187E508201D33700058469E /* CameraViewController.swift */,
 				11CD203E201D753D0008E301 /* SendDonationViewController.swift */,
+				9A1F883A201DB58700E1EF41 /* UPSViewController.swift */,
 				9A9DF446201D458100E983BC /* MKGradientGenerator.swift */,
 				9A9DF447201D458100E983BC /* MKRingProgressView.swift */,
 				11CD203C201D6BB60008E301 /* Resnet50.mlmodel */,
@@ -165,6 +168,7 @@
 				9A9DF445201D430100E983BC /* UserViewController.swift in Sources */,
 				1187E4F7201CFB1E0058469E /* AppDelegate.swift in Sources */,
 				1187E509201D33700058469E /* CameraViewController.swift in Sources */,
+				9A1F883B201DB58700E1EF41 /* UPSViewController.swift in Sources */,
 				9A1F8839201D941800E1EF41 /* TableViewCell.swift in Sources */,
 				11CD203F201D753D0008E301 /* SendDonationViewController.swift in Sources */,
 				9A9DF443201D3B5100E983BC /* MapViewController.swift in Sources */,
